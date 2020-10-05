@@ -1,0 +1,30 @@
+package com.sample.web.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.sample.dto.APIData;
+import com.sample.service.APIPerformanceService;
+
+@Controller
+@RequestMapping("/manager")
+public class APIController {
+
+	@Autowired
+	APIPerformanceService apiPerformanceService;
+	
+	@RequestMapping("/managerhome.do")
+	public String getAPIData() {
+				
+		return "manager/managerhome";
+	}
+	
+	@RequestMapping("/apijson.do")
+	@ResponseBody
+	public APIData getAllAPIData(APIData apiData) {
+		
+		return apiPerformanceService.getAPIData(apiData);
+	}
+}

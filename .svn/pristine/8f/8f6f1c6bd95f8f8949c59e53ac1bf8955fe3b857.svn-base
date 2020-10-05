@@ -1,0 +1,467 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>같이 보자! 공공연한사이</title>
+<link rel="stylesheet" href="/resources/css/jquery.fullPage.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.color.js"></script>
+<script type="text/javascript" src="/resources/js/custom.js"></script>
+<style type="text/css">
+.category{
+	background-color: #C0C0C0;
+    transition: all 0.5s;
+     transition-timing-function: ease;
+}
+.category .col:hover{
+    transition: all 0.5s;
+    transition-timing-function:ease;
+    background-color: white;
+    cursor: pointer;
+}
+.category .col {
+	font-size: 25px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+a {
+	text-decoration: none !important;
+	color: black;
+}
+a:hover {
+	font-weight: bold;
+	color: black;
+}
+.modal-dialog.modal-80size {
+  width: 80%;
+  height: 80%;
+  margin: 0;
+  padding: 0;
+}
+
+.modal-content.modal-80size {
+  height: auto;
+  min-height: 80%;
+}
+.modal.modal-center {
+  text-align: center;
+}
+
+@media screen and (min-width: 768px) { 
+  .modal.modal-center:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: " ";
+    height: 100%;
+  }
+}
+
+.modal-dialog.modal-center {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle; 
+}
+</style>
+</head>
+<body>
+<div class="header">
+	<%@ include file="../common/navi.jsp" %>
+</div>
+<div class="body" style="margin-top: 100px;">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<div class="row mb-3">
+					<div class="col-12">
+						<strong><span style="font-size: 25px;">고객지원센터</span></strong>
+					</div>
+				</div>
+				<div class="row mb-3">
+					<div class="col-12">
+						<div class="row category" id="category" align="center">
+							<div class="col" id="notice-list"><a href="/notice/list.do">공지사항</a></div>
+							<div class="col" id="QnA-list"><a href="/qna/list.do">QnA</a></div>
+							<div class="col">자주하는질문</div>
+							<div class="col">나의문의내역</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<table class="table" style="text-align: center;">
+							<colgroup>
+								<col width="5%">
+								<col width="15%">
+								<col width="45%">
+								<col width="10%">
+								<col width="10%">
+								<col width="10%">
+							</colgroup>
+							<tbody>
+								<tr>
+									<td>${detail.id }</td>
+									<td>
+										<c:choose>
+											<c:when test="${detail.category eq 0 }">
+												서비스소식
+											</c:when>
+											<c:when test="${detail.category eq 1 }">
+												서비스오픈
+											</c:when>
+											<c:when test="${detail.category eq 2 }">
+												서비스종료
+											</c:when>
+											<c:when test="${detail.category eq 3 }">
+												서비스안내
+											</c:when>
+											<c:when test="${detail.category eq 4 }">
+												기 타
+											</c:when>
+										</c:choose>
+									</td>
+									<td style="text-align: left !important; ">
+										<c:choose>
+											<c:when test="${detail.badge eq 0 }">
+												<c:out value="${detail.title }"></c:out>
+											</c:when>
+											<c:when test="${detail.badge eq 1 }">
+												<span class="badge badge-danger">단독판매</span>
+												<c:out value="${detail.title }"></c:out>
+											</c:when>
+											<c:when test="${detail.badge eq 2 }">
+												<span class="badge badge-primary">새소식</span>
+												<c:out value="${detail.title }"></c:out>
+											</c:when>
+										</c:choose>
+									</td>
+									<td>${detail.admin.id }</td>
+									<td>${detail.hits }</td>
+									<td><fmt:formatDate value="${detail.regDate }"/></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="row" style="background-color: #f5f5f5; height: 300px;">
+					<c:choose>
+							<c:when test="${detail.images.size() == 1 }">
+								<div class="col-3 mt-5" style="text-align: center;">
+									<img src="../resources/sample-images/${detail.images[0].imagePath }" style="width: 200px; height: 200px;">
+									<button type="button" class="btn btn-info btn-sm" data-toggle='modal' data-target="#detail-image-sizeUp" style="margin-top: 10px;">크게보기</button>
+								</div>
+							</c:when>
+							<c:when test="${detail.images.size() == 2 }">
+								<div class="col-3 mt-5" style="text-align: center;">
+									<c:forEach var="image" items="${detail.images }">
+										<img src="../resources/sample-images/${image.imagePath }" style="width: 125px; height: 200px;">
+									</c:forEach>
+									<button type="button" class="btn btn-info btn-sm" data-toggle='modal' data-target="#detail-image-sizeUp" style="margin-top: 10px;">크게보기</button>
+								</div>
+							</c:when>
+							<c:when test="${detail.images.size() == 3 }">
+								<div class="col-3 mt-5" style="text-align: center;">
+									<img src="../resources/sample-images/${detail.images[0].imagePath }" style="width: 125px; height: 100px;">
+									<img src="../resources/sample-images/${detail.images[1].imagePath }" style="width: 125px; height: 100px;">
+									<img src="../resources/sample-images/${detail.images[2].imagePath }" style="width: 125px; height: 100px; margin-top: 5px;">
+									<button type="button" class="btn btn-info btn-sm" data-toggle='modal' data-target="#detail-image-sizeUp" style="margin-top: 10px;">크게보기</button>
+								</div>
+							</c:when>
+							<c:when test="${detail.images.size() == 4 }">
+								<div class="col-3 mt-5" style="text-align: center;">
+									<c:forEach var="image" items="${detail.images }">
+										<img src="../resources/sample-images/${image.imagePath }" style="width: 125px; height: 100px;">
+									</c:forEach>
+									<button type="button" class="btn btn-info btn-sm" data-toggle='modal' data-target="#detail-image-sizeUp" style="margin-top: 10px;">크게보기</button>
+								</div>
+							</c:when>
+					</c:choose>
+					<div class="col-8">
+						<div class="row" style="margin-top: 50px; ">
+							<div class="col-12">
+								<c:forEach var="item" items="${detail.insideContents }">
+									<c:if test="${item.position eq 1 }">
+										<div style="font-size: 25px; font-weight: bolder;"><p>${item.title }</p></div>
+									</c:if>
+								</c:forEach>
+							</div>							
+						</div>
+						<div class="row">
+							<div class="col-1">
+								 <i class="fas ${detail.imoticon } fa-4x"></i>
+							</div>
+							<div class="col-9" style="margin-left: 50px;">
+								<c:forEach var="item" items="${detail.insideContents }">
+									<c:if test="${item.position eq 2 }">
+										${item.content }
+									</c:if>
+								</c:forEach>
+							</div>
+						</div>
+						<!-- 
+						<div class="row" style="margin-top: 30px;">
+							<div class="col-12">
+								<a href="" class="btn btn-primary">상세보기</a>
+							</div>
+						</div>
+						 -->
+					</div>
+				</div>
+				<div class="row" style="margin-top: 50px;"><div class="col-12"></div></div>
+				<div class="row">
+					<div class="col-12">
+						<table class="table"><tr><th></th></tr></table>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="row">
+							<div class="col-12" style="margin-bottom: 15px; font-weight: bolder; font-size: 25px;">
+								<c:forEach var="item" items="${detail.insideContents }">
+									<c:if test="${item.position eq 3 }">
+										${item.title }
+									</c:if>
+								</c:forEach>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<c:forEach var="item" items="${detail.insideContents }">
+									<c:if test="${item.position eq 4 }">
+										${item.content }
+									</c:if>
+								</c:forEach>
+							</div>
+						</div>
+					</div>
+				</div>
+				<c:if test="${adminYN ne true }">
+					<div class="row">
+						<div class="col-12" align="right">
+							<div class="row">
+								<div class="col-12" align="right">
+									<a href="/notice/list.do"><i class="fas fa-stream fa-2x" style="color: black;"></i></a>
+								</div>
+							</div>
+							<div class="row right">
+								<div class="col-12" align="right">
+									<span><strong>목록</strong></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</c:if>
+				<c:if test="${adminYN eq true }">
+					<div class="row mt-3">
+						<div class="col-9">
+						</div>
+						<div class="col-1 right">
+							<div class="row">
+								<div class="col-12" align="center">
+									<a href="/notice/list.do"><i class="fas fa-stream fa-2x" style="color: black;"></i></a>
+								</div>
+							</div>
+							<div class="row right">
+								<div class="col-12" align="center">
+									<span><strong>목록</strong></span>
+								</div>
+							</div>
+						</div>
+						<div class="col-1 right">
+							<a href="/notice/modify.do?no=${detail.id }" class="btn btn-primary">수정하기</a>
+						</div>
+						<div class="col-1 right">
+							<button type="button" class="btn btn-danger detail-delete" data-target=${detail.id } id="detail-delete">삭제</button>
+						</div>
+					</div>
+				</c:if>
+				<div class="row" style="margin-top: 30px;">
+					<div class="col-12">
+						<table class="table" style="height: 100px;">
+							<colgroup>
+								 <col width="10%">
+								 <col width="10%">
+								 <col width="70%">
+								 <col width="10%">
+							</colgroup>
+							<tr>
+							<c:choose>
+								<c:when test="${preNoticeIdInfo eq null }">
+									<td><span style="padding-right: 7px;">이전글</span><i class="fas fa-angle-up"></i></td>
+									<td>${preNoticeIdInfo.category }</td>
+									<td>게시글이 존재하지 않습니다.</td>
+									<td><fmt:formatDate value="${preNoticeIdInfo.regDate }"/></td>
+								</c:when>
+								<c:otherwise>
+									<td><span style="padding-right: 7px;">이전글</span><i class="fas fa-angle-up"></i></td>
+									<td>															
+										<c:choose>
+											<c:when test="${preNoticeIdInfo.category eq '0' }">
+												서비스소식
+											</c:when>
+											<c:when test="${preNoticeIdInfo.category eq '1' }">
+												서비스오픈
+											</c:when>
+											<c:when test="${preNoticeIdInfo.category eq '2' }">
+												서비스종료
+											</c:when>
+											<c:when test="${preNoticeIdInfo.category eq '3' }">
+												서비스안내
+											</c:when>
+											<c:when test="${preNoticeIdInfo.category eq '4' }">
+												기 타
+											</c:when>
+										</c:choose>
+									</td>
+									<td><a href="/notice/detail.do?no=${preNoticeIdInfo.id }">${preNoticeIdInfo.title }</a></td>
+									<td><fmt:formatDate value="${preNoticeIdInfo.regDate }"/></td>
+								</c:otherwise>
+							</c:choose>
+							</tr>
+							<tr>
+							<c:choose>
+								<c:when test="${nextNoticeIdInfo eq null }">
+									<td><span style="padding-right: 7px;">다음글</span><i class="fas fa-angle-down"></i></td>
+									<td>${nextNoticeIdInfo.category }</td>
+									<td>게시글이 존재하지 않습니다.</td>
+									<td><fmt:formatDate value="${nextNoticeIdInfo.regDate }"/></td>
+								</c:when>
+								<c:otherwise>
+									<td><span style="padding-right: 7px;">다음글</span><i class="fas fa-angle-down"></i></td>
+									<td>
+										<c:choose>
+											<c:when test="${nextNoticeIdInfo.category eq '0' }">
+												서비스소식
+											</c:when>
+											<c:when test="${nextNoticeIdInfo.category eq '1' }">
+												서비스오픈
+											</c:when>
+											<c:when test="${nextNoticeIdInfo.category eq '2' }">
+												서비스종료
+											</c:when>
+											<c:when test="${nextNoticeIdInfo.category eq '3' }">
+												서비스안내
+											</c:when>
+											<c:when test="${nextNoticeIdInfo.category eq '4' }">
+												기 타
+											</c:when>
+										</c:choose>
+									</td>
+									<td><a href="/notice/detail.do?no=${nextNoticeIdInfo.id }">${nextNoticeIdInfo.title }</a></td>
+									<td><fmt:formatDate value="${nextNoticeIdInfo.regDate }"/></td>
+								</c:otherwise>								
+							</c:choose>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- The Modal -->
+<div class="modal fade modal-center" tabindex="-1" role="dialog" id="detail-image-sizeUp">
+	<div class="modal-dialog modal-fullsize modal-center" role="document">
+		<div class="modal-content modal-fullsize">
+		<!-- Modal body -->
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-12">
+					<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+						<ol class="carousel-indicators">
+							<c:forEach var="item" varStatus="status" items="${detail.images }">
+								<li data-target="#carouselExampleIndicators" data-slide-to="${status.index }" class="${status.index == 0 ? 'active' : '' }"></li>
+							</c:forEach>
+						</ol>
+					<div class="carousel-inner" id="image-form">
+					<c:forEach var="item" varStatus="status" items="${detail.images }">
+						<c:set value="0" var="index"/>
+						<div class="carousel-item ${status.index == index ? 'active' : '' }">
+							<img class="d-block w-100" src="/resources/sample-images/${item.imagePath }">
+						</div>
+						<c:set var="index" value="${index + 1 }"/>
+					</c:forEach>
+					<!--  
+						<div class="carousel-item">
+							<img class="d-block w-100" src="../resources/sample-images/${detail.images[1].imagePath }">
+						</div>
+						<div class="carousel-item">
+							<img class="d-block w-100" src="../resources/sample-images/${detail.images[2].imagePath }">
+						</div>
+						<div class="carousel-item">
+							<img class="d-block w-100" src="../resources/sample-images/${detail.images[3].imagePath }">
+						</div>
+					-->
+					</div>
+					<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="sr-only">Previous</span>
+					</a>
+					<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="sr-only">Next</span>
+					</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
+</div>
+</div>
+<script type="text/javascript">
+$(function () {
+	//현재 페이지의 URL주소를 가져온다.
+	var URL = window.location.href;
+	// URL에 notice가 포함되어있으면 배경색을 흰색으로 바꿔준다.
+	if (URL.indexOf("notice") != -1) {
+		$("#notice-list").css("background-color","white")
+	}
+	
+	$("#detail-delete").on('click', function () {
+		
+		var currentNoticeId = $(this).data('target');
+		
+		$.ajax({
+			url:"/notice/delete.do",
+			data: {id: currentNoticeId},
+			type: "GET",
+			success : function () {
+				alert("삭제가 완료되었습니다.");
+				location.href="/notice/list.do";
+			}
+		})
+	})
+	/*
+	$(".carousel-inner .carousel-item").each(function (index, element) {
+		if ($(element).attr("id") == 0) {
+			$(element).addClass("active")
+		} else if ($(element).attr("id") == 1) {
+			$(element).addClass("active")
+		} else if ($(element).attr("id") == 2) {
+			$(element).addClass("active")
+		} else if ($(element).attr("id") == 3) {
+			$(element).addClass("active")
+		}
+	})
+	*/
+	$(".carousel-item").on("change", function () {
+		console.log(this);
+	})
+	
+	
+})
+</script>
+</body>
+</html>

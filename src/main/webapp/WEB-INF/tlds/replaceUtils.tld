@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib 
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+    version="2.1">
+
+    <display-name>replaceUtils Functions</display-name>    
+    <tlib-version>1.0</tlib-version>
+    <short-name>rutil</short-name>
+    <uri>com.sample.gongsa</uri>
+
+    <function>
+        <name>replaceTag</name>
+        <function-class>com.sample.utils.replaceUtils</function-class>
+        <function-signature>java.lang.String replaceTag(java.lang.String)</function-signature>
+    </function>
+</taglib>

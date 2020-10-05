@@ -1,0 +1,77 @@
+package com.sample.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.sample.dto.PerformanceDto;
+import com.sample.dto.PerformanceDetailDto;
+import com.sample.web.view.HallInfo;
+import com.sample.web.view.Performance;
+import com.sample.web.view.PerformanceSchedule;
+import com.sample.web.view.PerformanceSeatPrice;
+
+public interface PerformanceService {
+    void addPerformance(Performance performance);
+
+    List<Performance> getAllPerformances();
+    List<Performance> searchPerformances(Performance performance);    
+    PerformanceDto getPerformanceDetail(int performanceId);        
+    List<PerformanceSchedule> getPerformanceDetailByMap(Map<String, Object> data);
+    List<PerformanceSchedule> getPerformanceDetailByDate(String performanceDate);
+    PerformanceDetailDto getPerformanceByPerformanceMainId(int performanceMainId);
+    
+    /**
+     * 해당 category에 속하는 공연상세정보 리스트 조회한다. 
+     * @param category
+     * @return 해당 category에 속하는 공연상세정보 리스트 
+     */
+    List<PerformanceDetailDto> getPerformancesByCategory(String category);	
+    
+    /**
+     * 검색조건에 해당하는 공연상세정보 리스트 조회한다.
+     * @param map
+     * @return 해당 category에 속하는 
+     */
+    List<PerformanceDetailDto> searchPerformances(Map<String, Object> map);
+    
+    /**
+     * 공연아이디에 해당하는 공연상세정보를 조회한다.
+     * @param performanceId
+     * @return
+     */
+    PerformanceDetailDto getPerformanceDetailById(int performanceId);
+
+    /**
+     * 매개변수로 주어진 카테고리에 해당하는 모든 장르들을 반환한다.
+     * @param category
+     * @return
+     */
+    String[] getGenreByCategory(String category);
+    
+    /**
+     * 검색조건과 페이지정보에 부합하는 공연상세정보가 담긴 맵를 반환한다. (페이징처리됨)
+     * @param map
+     * @return
+     */
+    Map<String, Object> getPerformanceForPaging(Map<String, Object> map);
+    
+    /**
+     * 모든 공연장소에 대한 정보를 조회한다.
+     * @return
+     */
+    List<HallInfo> getAllHallInfos();
+    
+    /**
+     * 공연정보 번호에 해당하는 공연정보를 조회한다.
+     * @param performanceId
+     * @return
+     */
+    HallInfo getHallInfoById(int HallInfoid);
+    
+    List<PerformanceSeatPrice> getPerformanceSeatPriceById(int performanceId);
+    PerformanceSchedule getPerformanceScheduleByPerformanceId(int performanceMainId);
+
+	List<PerformanceDto> getPerformanceByUserId(String userId);
+    //List<PerformanceDetailDto> searchPerformances(Performance performance);
+    //Performance getPerformanceDetail(int performanceId);
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<settings>
+		<!-- 일부 데이터베이스 제품은 컬럼에 null값이 저장되는 경우, 해당 컬럼의 JDBC타입을 요구한다. 아래의 설정은 JDBC타 -->
+		<setting name="jdbcTypeForNull" value="NULL" />
+		<!-- 조회된 컬럼의 값이 Null인 경우라도 setter메소드나 Map의 put메소드를 호출하게 한다. resultType="hashmap"으로 
+			설정할 경우 필요한 설정이다. * int, boolean 과 같은 기본자료형 타입의 변수인 경우 null값이 대입되지 않는 문제가 
+			있다. -->
+		<setting name="callSettersOnNulls" value="false" />
+	</settings>
+	<typeAliases>
+		<typeAlias type="com.sample.web.view.MateTimeLine" alias="MateTimeLine"/>
+		<typeAlias type="com.sample.web.view.Mate" alias="Mate"/>
+		<typeAlias type="com.sample.web.view.Qna" alias="Qna"/>
+		<typeAlias type="com.sample.web.view.Payment" alias="Payment"/>
+		<typeAlias type="com.sample.web.view.Reserve" alias="Reserve"/>
+		<typeAlias type="com.sample.web.view.Performance" alias="Performance"/>
+		<typeAlias type="com.sample.web.view.HallInfo" alias="HallInfo"/>
+		<typeAlias type="com.sample.web.view.User" alias="User"/>
+		<typeAlias type="com.sample.web.view.Coupon" alias="Coupon"/>
+		<typeAlias type="com.sample.web.view.UserBadge" alias="UserBadge"/>
+		<typeAlias type="com.sample.web.view.PerformanceSchedule" alias="PerformanceSchedule"/>
+		<typeAlias type="com.sample.web.view.Notice" alias="Notice"/>
+		<typeAlias type="com.sample.web.view.HallSeat" alias="HallSeat"/>
+		<typeAlias type="com.sample.web.view.PerformanceSeatPrice" alias="PerformanceSeatPrice"/>
+		<typeAlias type="com.sample.dto.PerformanceDto" alias="PerformanceDto"/>
+		<typeAlias type="com.sample.dto.PerformanceDetailDto" alias="PerformanceDetailDto"/>
+		<typeAlias type="com.sample.dto.NoticeDto" alias="NoticeDto"/>
+		<typeAlias type="com.sample.dto.PerformanceDetailDto" alias="PerformanceDetailDto"/>
+		<typeAlias type="com.sample.dto.MypageLastestReserveDto" alias="LastestPerformance"/>
+	</typeAliases>
+	<mappers>
+		<mapper resource="META-INF/mybatis/mappers/users.xml"/>
+		<mapper resource="META-INF/mybatis/mappers/performances.xml"/>
+		<mapper resource="META-INF/mybatis/mappers/notices.xml"/>
+		<mapper resource="META-INF/mybatis/mappers/mates.xml"/>
+		<mapper resource="META-INF/mybatis/mappers/reserve.xml"/>
+		<mapper resource="META-INF/mybatis/mappers/payments.xml"/>
+		<mapper resource="META-INF/mybatis/mappers/qna.xml"/>
+	</mappers>
+</configuration>

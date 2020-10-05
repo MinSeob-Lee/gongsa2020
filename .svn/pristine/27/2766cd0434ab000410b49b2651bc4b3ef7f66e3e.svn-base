@@ -1,0 +1,69 @@
+package com.sample.web.controller;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.sample.dto.PerformanceDto;
+import com.sample.service.PerformanceService;
+import com.sample.service.UserService;
+import com.sample.web.view.Coupon;
+import com.sample.web.view.PerformanceSchedule;
+import com.sample.web.view.PerformanceSeatPrice;
+import com.sample.web.view.User;
+
+@Controller
+@RequestMapping("/payment")
+public class PaymentController {
+	
+	@Autowired
+	private PerformanceService performanceService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@RequestMapping("/step1.do")
+	public String detailPerformance(@RequestParam("no") int performanceId, String userId, Model model) {
+		PerformanceDto performanceDto = performanceService.getPerformanceDetail(performanceId);
+		List<Coupon> coupons = userService.getCouponByUserId(userId);
+		User user = userService.getUserDetail(userId);
+		
+		model.addAttribute("performanceDto", performanceDto);
+		model.addAttribute("coupons", coupons);
+		model.addAttribute("user", user);
+		
+		return "payment/step1";
+	}
+	
+	@RequestMapping("/performanceSchedule.do")
+	@ResponseBody
+	public List<PerformanceSchedule> getPerformanceSchedule(@RequestParam("no") int performanceId,
+			@RequestParam("date") Date performanceDate) {
+		
+		List<PerformanceSchedule> performanceSchedules = performanceService.getPerformanceDetailByDate(performanceDate);
+		
+		return performanceSchedules;
+	}
+	
+	@RequestMapping("/performanceMain.do")
+	@ResponseBody
+	public PerformanceDto getPerformanceByPerformanceMainId(@RequestParam("no") int performanceMainId) throws ParseException {
+		
+		PerformanceSchedule schedule = performanceService.getPerformanceScheduleByPerformanceId(performanceMainId);
+		List<PerformanceSeatPrice> seats = performanceService.getPerformanceSeatPriceById(schedule.getInfoId());
+		System.out.println(seats.size());
+		PerformanceDto dto = new PerformanceDto(schedule);
+		dto.setSeatPrice(seats);
+		
+		return dto;
+	}
+}

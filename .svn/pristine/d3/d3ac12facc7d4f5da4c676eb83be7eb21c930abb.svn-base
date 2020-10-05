@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sample.dao.QnaDao">
+
+
+	<resultMap type="Qna" id="qnalistbyuser">
+		 <result property="id" column="id" />
+		 <result property="questionTitle" column="questionTitle" />
+		 <result property="category" column="category" />
+		 <result property="regDate" column="regDate" />
+		 <result property="hits" column="hits" />
+		 <result property="opened" column="opened"  javaType="java.lang.Boolean" jdbcType="CHAR" typeHandler="com.sample.utils.BooleanChecker" />
+		 <association property="questionUser" javaType="User">
+		 	<result property="id"  column="userId"/>
+		 	<result property="nickname" column="nickname"/>
+		 </association>
+	</resultMap>
+	<select id="getQnasByUserId" parameterType="string" resultMap="qnalistbyuser">
+		select a.id, c.category, questionTitle, hits, userId, regDate, opened, nickname
+		from qna_main a
+		join user_main b on a.userId = b.id
+		join qna_category c on a.category = c.id
+		where userId = #{userId}
+		order by id desc
+	</select>
+	
+	<select id="getTotalRowsOfQnaList" parameterType="map" resultType="int">
+		select count(*) from qna_main
+		<where>
+			<if test="status != '전체'">
+				category like concat('%', #{status}, '%')
+			</if>
+			<if test="keyword != ''">
+				and questionTitle like concat('%', #{keyword}, '%')
+			</if>
+		and deleted = 'N'
+		</where>
+	</select>
+	
+	<select id="getQnas" parameterType="map" resultType="Qna">
+		select id			as id
+		, userid			as "questionUser.id"
+		, questionTitle		as questionTitle
+		, questionContent	as questionContent
+		, answerTitle		as answerTitle
+		, answerContent		as answerContent
+		, regDate			as regDate
+		, category			as category
+		, opened			as opened
+		, hits				as hits
+		from qna_main
+		<where>
+			<if test="status != '전체'">
+				category like concat('%', #{status}, '%')
+			</if>
+			<if test="keyword != ''">
+				and questionTitle like concat('%', #{keyword}, '%')
+			</if>
+		and deleted = 'N'
+		</where>
+		order by id desc
+		limit #{beginIndex}, #{endIndex}
+	</select>
+	
+	<select id="getQnaDetail" parameterType="int" resultType="Qna">
+		select id			as id
+		, userid			as "questionUser.id"
+		, questionTitle		as questionTitle
+		, questionContent	as questionContent
+		, answerTitle		as answerTitle
+		, answerContent		as answerContent
+		, regDate			as regDate
+		, category			as category
+		, opened			as opened
+		, hits				as hits
+		from qna_main
+		where id = #{value}
+	</select>
+	
+	<insert id="insertQna" parameterType="Qna">
+		insert into qna_main
+		(questionTitle, userId, questionContent, regDate, category, opened)
+		values
+		(#{questionTitle}, #{questionUser.id}, #{questionContent}, now(), #{category}, #{opened})
+	</insert>
+	
+	<insert id="insertAnswer" parameterType="map">
+		update qna_main
+		set
+			answerTitle = #{answerForm.answerTitle}
+			, answerContent = #{answerForm.answerContent}
+			, adminId = #{answerForm.adminId}
+			, answerDate = now()
+		where 
+			id = #{answerForm.qnaId}
+	</insert>
+	
+	<update id="updateQna" parameterType="map">
+		update qna_main
+		set
+			questionTitle = #{qnaForm.qnaTitle}
+			, questionContent = #{qnaForm.qnaContent}
+			, opened = #{qnaForm.qnaOpened}
+			, category = #{qnaForm.qnaCategory}
+		where
+			id = #{qnaForm.qnaId}
+	</update>
+	
+	<update id="deleteQna" parameterType="int">
+		update qna_main
+		set
+			deleted = 'Y'
+		where id = ${value}
+	</update>
+	
+</mapper>
+

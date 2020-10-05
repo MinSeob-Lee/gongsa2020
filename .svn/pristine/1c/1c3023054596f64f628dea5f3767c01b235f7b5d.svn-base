@@ -1,0 +1,101 @@
+package com.sample.web.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.sample.service.QnaService;
+import com.sample.service.UserService;
+import com.sample.utils.StringUtil;
+import com.sample.web.view.Pagination;
+import com.sample.web.view.Qna;
+import com.sample.web.view.User;
+
+/**
+ * 
+ * @author semin
+ *
+ */
+@Controller
+@RequestMapping("/qna")
+public class QnAController {
+	
+	@Autowired
+	QnaService qnaService;
+	
+	@Value("${directory.save.qnaImg}")
+	private String saveDirectory;
+	
+	@Autowired
+	UserService userService;
+	
+	/**
+	 * 
+	 * @param 페이지번호, 보여줄 행의 수, 카테고리 상태, 검색어
+	 * @return
+	 */
+	@GetMapping("/list.do")
+	public String list(Model model
+				, @RequestParam(value="pageNo", defaultValue="1") int pageNo
+				, @RequestParam(value="rows", defaultValue="10") int rows
+				, @RequestParam(value="status", defaultValue="전체") String status
+				, @RequestParam(value="keyword", defaultValue="blank") String keyword
+				, HttpServletRequest req) {
+
+		if ("blank".equals(status)) {
+			status = null;
+		}
+		
+		if ("blank".equals(keyword)) {
+			keyword = null;
+		}
+		
+		String nowStatus = StringUtil.nullToValue(status, "전체");
+		String searchKeyword = StringUtil.nullToBlank(keyword);
+		
+		Map<String, Object> map = qnaService.getQnAForPaging(pageNo, rows, nowStatus, searchKeyword);
+		Pagination pagination = (Pagination) map.get("pagination");
+		List<Qna> qnas = (List<Qna>)map.get("qnas");
+		int totalRows = (Integer)map.get("totalRows");
+		int totalPageCount = (int)Math.ceil(((double)totalRows/(double)rows));
+		
+		HttpSession session = req.getSession();
+		
+		if (session.getAttribute("LOGIN_USER") != null) {
+			 User loginUser = (User)session.getAttribute("LOGIN_USER");
+			 User user = userService.getUserDetail(loginUser.getId());
+			 model.addAttribute("user", user);
+		}
+		
+		model.addAttribute("qnas", qnas);
+		model.addAttribute("pagination", pagination);
+		model.addAttribute("nowStatus", nowStatus);
+		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("totalPageCount", totalPageCount);
+		model.addAttribute("rows", rows);
+		
+		for (Qna qns : qnas) {
+			System.out.println(qns.getCategory());
+		}
+		
+		System.out.println(pagination);
+		System.out.println(nowStatus);
+		System.out.println(searchKeyword);
+		System.out.println(pageNo);
+		System.out.println(totalPageCount);
+		System.out.println(rows);
+		
+		return "qna/list";
+	}
+}

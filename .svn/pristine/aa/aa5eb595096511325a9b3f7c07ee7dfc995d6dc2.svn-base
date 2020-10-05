@@ -1,0 +1,217 @@
+package com.sample.web.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import com.sample.service.*;
+import com.sample.utils.NumberUtil;
+import com.sample.web.view.Mate;
+import com.sample.web.view.Payment;
+import com.sample.web.view.Performance;
+
+import oracle.jdbc.proxy.annotation.Post;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import com.sample.web.security.Auth;
+import com.sample.web.view.Qna;
+import com.sample.web.view.Reserve;
+import com.sample.web.view.User;
+
+@Controller
+@RequestMapping("/mypage")
+public class MyPageController {
+    private final
+    ReserveService reserveService;
+    private final
+    UserService userService;
+    private final
+    PerformanceService performanceService;
+    private final
+    QnaService qnaService;
+    private final
+    PaymentService paymentService;
+    private final
+    MateService mateService;
+
+    @Autowired
+    public MyPageController(ReserveService reserveService, UserService userService, PerformanceService performanceService, QnaService qnaService, PaymentService paymentService, MateService mateService) {
+        this.reserveService = reserveService;
+        this.userService = userService;
+        this.performanceService = performanceService;
+        this.qnaService = qnaService;
+        this.paymentService = paymentService;
+        this.mateService = mateService;
+    }
+
+
+    @Auth
+    @RequestMapping("/mypagemain.do")
+    public String main(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("LOGIN_USER");
+        user = userService.getUserDetail(user.getId());
+        user.setLikes(performanceService.getPerformanceByUserId(user.getId()));
+        Reserve reserve = reserveService.getLastestReserveByUserId(user.getId());
+        List<Qna> qnaList = qnaService.getQnasByUserId(user.getId());
+
+        model.addAttribute("user", user);
+
+        System.out.println(user.getLikes().size());
+
+        model.addAttribute("lastReserve", reserve);
+        System.out.println(reserve.getId());
+        model.addAttribute("qnaList", qnaList);
+
+        System.out.println(qnaList.size());
+        return "mypage/mypagemain";
+    }
+
+    @Auth
+    @GetMapping("/myperformance.do")
+    public String myPerformance() {
+        System.out.println("load myperformance page");
+        return "mypage/myperformance";
+    }
+
+    @PostMapping("/myperformance.do")
+    @ResponseBody
+    public Map<String, Object> myPerformance(@RequestBody User user) {
+        System.out.println("request to mypage controller href :'POST' /myperformance.do");
+
+        List<Reserve> reserves = reserveService.getReservesByUserId(user.getPoint(), user.getId());
+        Map<String, Object> map = new HashMap<>();
+
+
+        map.put("reserves", reserves);
+
+
+        return map;
+    }
+
+    @Auth
+    @RequestMapping("/myperformanceDetail.do")
+    public String myPerformanceDetail(@RequestParam("reserveId") String reserveId, HttpSession session, Model model) {
+        int id = NumberUtil.stringToInt(reserveId);
+        System.out.println(id);
+        // user
+        User user = (User) session.getAttribute("LOGIN_USER");
+        user = userService.getUserDetail(user.getId());
+        model.addAttribute("user", user);
+        // reserve
+        Reserve reserve = reserveService.getReserveDetail(id);
+        System.out.println(reserve == null);
+        model.addAttribute("reserve", reserve);
+        model.addAttribute("performance", reserve.getPerformance());
+        model.addAttribute("hall", reserve.getPerformance().getSchedule().get(0).getHallinfo());
+        if (reserve.getMate() != null) {
+            model.addAttribute("mate", reserve.getMate());
+            System.out.println(reserve.getMate().getCategory());
+            System.out.println(reserve.getMate().getMateTags().size());
+        }
+        // payment
+        Payment payment = paymentService.getPaymentByReserveId(id);
+        model.addAttribute("payment", payment);
+        return "mypage/myperformanceDetail";
+    }
+    @Auth
+    @RequestMapping("/mymateroom.do")
+    public String myMateRoom() {
+        return "mypage/mymateroom";
+    }
+    
+    @PostMapping("/mymateroom.do")
+    @ResponseBody
+    public Map<String, Object> myMateRoom(HttpSession session){
+        Map<String, Object> map = new HashMap<>();
+        User user = (User) session.getAttribute("LOGIN_USER");
+        List<Mate> mates = mateService.mateListForMypage(user.getId());
+        for(Mate mate : mates) {
+        	System.out.println(mate);
+        }
+        map.put("mateList" , mates);
+        return map;
+    }
+
+    
+
+
+    @Auth
+    @RequestMapping("/myprofile.do")
+    public String myProfile(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("LOGIN_USER");
+        if (user != null) {
+            userService.getUserDetail(user.getId());
+        }
+
+        model.addAttribute("user", user);
+        return "mypage/myprofile";
+    }
+
+    @PostMapping("/myprofile.do")
+    @ResponseBody
+    public Map<String, Object> myProfile(HttpSession session) {
+        User user = (User) session.getAttribute("LOGIN_USER");
+        user = userService.getUserDetail(user.getId());
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", user);
+        System.out.println(user.getInterest().size());
+        System.out.println(user.getIntro().size());
+        return map;
+    }
+
+    @Auth
+    @RequestMapping("/myLikes.do")
+    public String myLikes() {
+        return "mypage/myLikes";
+    }
+
+    @PostMapping("/myLikes.do")
+    @ResponseBody
+    public Map<String, Object> myLikes(@RequestBody User user) {
+        Map<String, Object> map = new HashMap<>();
+        List<Performance> likes = performanceService.getUserLikeList(user.getPoint(), user.getId());
+        System.out.println(likes.size());
+        map.put("likes", likes);
+        return map;
+    }
+
+    @Auth
+    @RequestMapping("/myCoupon.do")
+    public String myCoupon() {
+        return "mypage/myCoupon";
+    }
+
+    @ResponseBody
+    @PostMapping("/myCoupon.do")
+    public Map<String, Object> myCoupon(HttpSession session) {
+        Map<String, Object> map = new HashMap<>();
+        User user = (User) session.getAttribute("LOGIN_USER");
+        user = userService.getUserDetail(user.getId());
+        map.put("coupons", user.getCoupons());
+        return map;
+    }
+
+    @Auth
+    @RequestMapping("/myPoint.do")
+    public String myPoint() {
+        return "mypage/myPoint";
+    }
+
+    @ResponseBody
+    @PostMapping("/myPoint.do")
+    public Map<String, Object> myPoint(HttpSession session) {
+        Map<String, Object> map = new HashMap<>();
+//        User user = (User) session.getAttribute("LOGIN_USER");
+        User user = userService.getUserDetail("test001");
+        System.out.println(user.getUserPointHistory().toString());
+        map.put("pointHistory", user.getUserPointHistory());
+        map.put("currPoint", user.getPoint());
+        System.out.println(user.getPassword());
+        return map;
+    }
+}

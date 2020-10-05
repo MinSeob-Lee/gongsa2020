@@ -1,0 +1,140 @@
+package com.sample.web.controller;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.sample.dto.PaymentDto;
+import com.sample.dto.PerformanceDto;
+import com.sample.service.PaymentService;
+import com.sample.service.PerformanceService;
+import com.sample.service.UserService;
+import com.sample.web.form.PaymentForm;
+import com.sample.web.view.Coupon;
+import com.sample.web.view.Payment;
+import com.sample.web.view.PerformanceSchedule;
+import com.sample.web.view.PerformanceSeatPrice;
+import com.sample.web.view.User;
+import com.sample.web.view.UserPoint;
+
+@Controller
+@RequestMapping("/payment")
+public class PaymentController {
+
+	@Autowired
+	private PerformanceService performanceService;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private PaymentService paymentService;
+
+	@RequestMapping("/step1.do")
+	public String detailPerformance(@RequestParam("no") int performanceId, String userId, Model model) {
+		PerformanceDto performanceDto = performanceService.getPerformanceDetail(performanceId);
+		List<Coupon> coupons = userService.getCouponByUserId(userId);
+		User user = userService.getUserDetail(userId);
+
+		PaymentForm paymentForm = new PaymentForm();
+
+		model.addAttribute("performanceDto", performanceDto);
+		model.addAttribute("coupons", coupons);
+		model.addAttribute("user", user);
+		model.addAttribute("paymentForm", paymentForm);
+
+		return "payment/step1";
+	}
+
+	@RequestMapping("/performanceSchedule.do")
+	@ResponseBody
+	public List<PerformanceSchedule> getPerformanceSchedule(@RequestParam("no") int performanceId,
+			@RequestParam("date") Date performanceDate) {
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("no", performanceId);
+		data.put("date", performanceDate);
+
+		List<PerformanceSchedule> performanceSchedules = performanceService.getPerformanceDetailByMap(data);
+
+		return performanceSchedules;
+	}
+
+	@RequestMapping("/performanceMain.do")
+	@ResponseBody
+	public PerformanceDto getPerformanceByPerformanceMainId(@RequestParam("no") int performanceMainId)
+			throws ParseException {
+
+		PerformanceSchedule schedule = performanceService.getPerformanceScheduleByPerformanceId(performanceMainId);
+		List<PerformanceSeatPrice> seats = performanceService.getPerformanceSeatPriceById(schedule.getInfoId());
+		PerformanceDto dto = new PerformanceDto(schedule);
+		dto.setSeatPrice(seats);
+
+		return dto;
+	}
+
+	@RequestMapping("/add.do")
+	public String paymentInsert(@ModelAttribute PaymentForm paymentForm, HttpSession session, RedirectAttributes redirect) {
+
+		User user = (User) session.getAttribute("LOGIN_USER");
+		user.setPoint(user.getPoint() - paymentForm.getUsedPoint());
+		
+		Payment payment = new Payment();
+		payment.setId(paymentForm.getId());
+		
+		UserPoint userPoint = new UserPoint();
+		userPoint.setUser(user);
+		userPoint.setValue(paymentForm.getUsedPoint());
+		
+		payment = paymentService.addPayment(paymentForm);
+		
+		userService.updateUser(user);
+		userPoint.setPayment(payment);
+		
+		userService.addUserPointHistory(userPoint);
+
+		int performanceId = paymentForm.getPerformanceId();
+		redirect.addAttribute("pid", performanceId);
+		
+		return "redirect:/mate/mate.do";
+	}
+	
+	@RequestMapping("admin_payment.do")
+	public String adminPayment() {
+		
+		return "payment/admin_payment";
+	}
+	
+	@RequestMapping("paymentStatus.do")
+	@ResponseBody
+	public List<PaymentDto> getPaymentStatus(PaymentDto paymentDto) {
+		
+		return paymentService.getPaymentStatus(paymentDto);
+	}
+	
+	@RequestMapping("paymentAll.do")
+	@ResponseBody
+	public List<PaymentDto> getPaymentAll(PaymentDto paymentDto) {
+		
+		return paymentService.getPaymentAll(paymentDto);
+	}
+	
+	@RequestMapping("totalSales.do")
+	@ResponseBody
+	public List<PaymentDto> getTotalSales(PaymentDto paymentDto) {
+		
+		return paymentService.getTotalSales(paymentDto);
+	}
+}

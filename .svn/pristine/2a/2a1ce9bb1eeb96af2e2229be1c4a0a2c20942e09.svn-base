@@ -1,0 +1,8 @@
+package com.sample.service;
+
+import com.sample.dto.APIData;
+
+public interface APIPerformanceService {
+
+	APIData getAPIData(APIData apiData);
+}

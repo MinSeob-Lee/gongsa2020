@@ -1,0 +1,94 @@
+package com.sample.web.view;
+
+import java.util.Date;
+
+public class Reserve {
+    private int id;
+    private User reserveUser;
+    private Performance performance;
+    private int seatPrice;
+    private Date regDate;
+    private String status;
+    private String receiveType;
+    private Mate mate;
+    private String seatRate;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public User getReserveUser() {
+        return reserveUser;
+    }
+
+    public void setReserveUser(User reserveUser) {
+        this.reserveUser = reserveUser;
+    }
+
+    public Performance getPerformance() {
+        return performance;
+    }
+
+    public void setPerformance(Performance performance) {
+        this.performance = performance;
+    }
+
+    public Date getRegDate() {
+        return regDate;
+    }
+
+    public void setRegDate(Date regDate) {
+        this.regDate = regDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getReceiveType() {
+        return receiveType;
+    }
+
+    public void setReceiveType(String receiveType) {
+        this.receiveType = receiveType;
+    }
+
+    public Mate getMate() {
+        return mate;
+    }
+
+    public void setMate(Mate mate) {
+        this.mate = mate;
+    }
+
+	public String getSeatRate() {
+		return seatRate;
+	}
+
+	public void setSeatRate(String seatRate) {
+		this.seatRate = seatRate;
+	}
+
+	public int getSeatPrice() {
+		return seatPrice;
+	}
+
+	public void setSeatPrice(int seatPrice) {
+		this.seatPrice = seatPrice;
+	}
+
+	@Override
+	public String toString() {
+		return "Reserve [id=" + id + ", reserveUser=" + reserveUser + ", performance=" + performance + ", seatPrice="
+				+ seatPrice + ", regDate=" + regDate + ", status=" + status + ", receiveType=" + receiveType + ", mate="
+				+ mate + ", seatRate=" + seatRate + "]";
+	}
+}

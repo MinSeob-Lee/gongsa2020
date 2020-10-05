@@ -1,0 +1,52 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<!DOCTYPE html>
+
+<div class="card">
+	<div class="card-body" style="background-color: rgba(0, 0, 0, 0.5);">
+		<div class="row">
+			<div class="col-3">
+				<img style="width: 200px; height: 200px;"
+					src="/resources/sample-images/sample-consert4.jpg"
+					class="rounded float-left" alt="...">
+			</div>
+			<div class="col-3">
+				<div class="row">
+					<div class="col-12 text-white mt-3"
+						style="border-bottom: 1px dotted #fff;">
+						<h3>${LOGIN_USER.id }</h3>
+					</div>
+					<div class="col-12 text-white mt-3"
+						style="border-bottom: 1px dotted #fff;">
+						<h3>${LOGIN_USER.nickname }</h3>
+					</div>
+					<div class="col-12 mt-3">
+						<button class="btn btn-primary btn-lg">나의 정보 변경</button>
+					</div>
+				</div>
+			</div>
+			<div class="col-3" style="border-right: 1px dotted #fff;">
+
+				<div class="col-12 text-white mt-3 text-center">
+					<h2>쿠폰</h2>
+				</div>
+				<div class="col-12 text-white text-center mt-3">
+					<h2>
+						<span class="text-warning">${LOGIN_USER.coupons.size() }</span>개
+					</h2>
+				</div>
+			</div>
+			<div class="col-3">
+				<div class="col-12 text-white mt-3 text-center">
+					<h2>포인트</h2>
+				</div>
+				<div class="col-12 text-white text-center mt-3">
+					<h2>
+						<span class="text-warning">${LOGIN_USER.point }</span>P
+					</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

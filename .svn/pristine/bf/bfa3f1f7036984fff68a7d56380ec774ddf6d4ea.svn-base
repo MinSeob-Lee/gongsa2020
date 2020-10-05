@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sample.dao.PaymentDao">
+	<!-- 
+	payment 테이블에 insert query
+	reserveId 외래키, pay 결제가격, method 결제방법, regDate 결제일, userdPoint 사용한 포인트
+	 -->
+	<insert id="insertPayment" parameterType="Payment" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO 
+			payment_main
+			(reserveId, pay, method, regDate, usedPoint, couponValue)
+		VALUES
+			(#{reserve.id}, #{pay}, #{method}, NOW(), #{usedPoint}, #{couponValue})
+			
+			<selectKey resultType="int" order="AFTER" keyProperty="id">
+				SELECT LAST_INSERT_ID() as id
+			</selectKey>
+	</insert>
+	
+	<select id="getPaymentByReserveId" parameterType="int" resultType="Payment">
+		SELECT  
+			pmain.id,
+			pmain.reserveId 		as "reserve.id",
+			pmain.pay,
+			pmain.method,
+			pmain.regDate,
+			pmain.usedPoint
+		FROM payment_main pmain
+		WHERE pmain.reserveId = #{value}
+		
+	</select>
+	
+	
+
+
+</mapper>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sample.dao.NoticeDao">
+
+	<select id="getAllNotices" resultType="Notice">
+		select 
+			id			as id, 
+			title		as title, 
+			category	as category, 
+			regDate		as regDate, 
+			adminid		as "admin.id", 
+			badge		as badge
+			hits		as hits
+		from notice_main
+		order by id DESC
+	</select>
+
+	<select id="getAllNoticeImages" resultType="String">
+		select category, imagePath
+		from images
+		where category = 'notice';
+	</select>
+	
+	<insert id="insertNoticeImages" parameterType="hashMap">
+		insert into images
+		(category, imagePath)
+		values
+		(#{category}, #{filename})
+	</insert>
+	
+	
+	<insert id="insertNoticeMain" parameterType="Notice">
+		insert into notice_main
+		(title, category, regDate, adminid, badge, imoticon)
+		values
+		(#{title}, #{category}, now(), #{admin.id}, #{badge}, #{imoticon})
+	</insert>
+	
+	<insert id="insertNoticeImagePath" parameterType="java.util.Map">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			SELECT A.id
+			FROM (SELECT id FROM notice_main ORDER BY id DESC LIMIT 1) A
+		</selectKey>
+		insert into notice_image_path
+		(id, imagePath)
+		values
+		<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+		#{no}, #{item}
+		</foreach>
+	</insert>
+	
+	<insert id="insertNoticeInsideContent" parameterType="java.util.Map">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			select A.id
+			FROM (SELECT id FROM notice_main ORDER BY id DESC LIMIT 1) A
+		</selectKey>
+		<!-- Collection에는 map의 key가 들어간다. -->
+			insert into notice_inside_content
+			(id, title, content, position)
+			values
+		<foreach collection="noticeListDto" item="item" index="index" separator=",">
+			<if test="item.position == 1">
+				(#{no}, #{item.title}, '', 1)
+			</if>
+			<if test="item.position == 2">
+				(#{no}, '', #{item.content}, 2)
+			</if>
+			<if test="item.position == 3">
+				(#{no}, #{item.title}, '', 3)
+			</if>
+			<if test="item.position == 4">
+				(#{no}, '', #{item.content}, 4)
+			</if>
+		</foreach>
+	</insert>	
+	
+	<select id="getTotalRowsOfNoticeList" parameterType="map" resultType="int">
+		select count(*) from notice_main
+		<where>
+			<if test="status != '전체'" >
+				category like concat('%', #{status}, '%') 
+			</if>
+			<if test="keyword != ''">
+				and title like concat('%', #{keyword}, '%')
+			</if>
+		</where>
+	</select>
+	
+	<select id="getNotices" parameterType="map" resultType="Notice">
+		select id		as id
+		, title			as title
+		, category		as category
+		, regDate		as regDate
+		, adminid		as "admin.id"
+		, badge			as badge
+		, hits			as hits
+		from notice_main
+		<where>
+			<if test="status != '전체'" >
+				category like concat('%', #{status}, '%') 
+			</if>
+			<if test="keyword != ''">
+				and title like concat('%', #{keyword}, '%')
+			</if>		
+		</where>
+		order by id desc
+		limit #{beginIndex}, #{endIndex}
+	</select>
+	
+	<update id="updateViewCount" parameterType="map">
+		update notice_main
+		set hits = hits + 1
+		where id = #{noticeId}
+	</update>
+	
+		<resultMap type="NoticeDetailDto" id="noticeDetail">
+		<result property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="category" column="category"/>
+		<result property="regDate" column="regDate"/>
+		<result property="badge" column="badge"/>
+		<result property="hits" column="hits"/>
+		<result property="imoticon" column="imoticon"/>
+		<association property="admin" javaType="User">
+			<result property="id" column="adminId"/>
+		</association>
+		<collection property="images" column="id" javaType="list" ofType="NoticeImage" select="getNoticeImagesById">
+		</collection>
+		<collection property="insideContents" column="id" javaType="list" ofType="NoticeInsideContentDto" select="getNoticeInsideContentDtoById">
+		</collection>
+	</resultMap>
+	
+	<!-- id에 실행시킬 메소드를 명시하고 실행결과를 resultMap(noticeDetail)에 담는다. -->
+	<select id="getNoticeById" parameterType="int" resultMap="noticeDetail">
+		SELECT a.id, a.title, a.category, a.regDate, a.adminId, a.badge, a.hits, a.imoticon, c.imagePath
+		FROM notice_main a,  notice_image_path c
+		WHERE a.id = c.id
+		AND a.id = #{value}
+	</select>
+	
+	<!-- id에 실행시킬 메소드를 명시하고 실행결과를 resultMap(noticeDetail)에 담는다. -->
+	<select id="getNoticeInsideContentDtoById" parameterType="int" resultType="NoticeInsideContentDto">
+		select id, title, content, position
+		from notice_inside_content
+		where id = #{value}
+	</select>
+	
+	<select id="getNoticeImagesById" parameterType="int" resultType="NoticeImage">
+		select id, imagePath
+		from notice_image_path
+		where id = #{value}
+	</select>
+	
+</mapper>

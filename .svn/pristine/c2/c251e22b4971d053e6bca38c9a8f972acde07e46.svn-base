@@ -1,0 +1,27 @@
+package com.sample.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.sample.dto.NoticeDetailDto;
+import com.sample.dto.NoticeInsideContentDto;
+import com.sample.web.view.Notice;
+
+
+public interface NoticeService {
+	
+	void addNewImage(Map<String, String> map);
+	
+	List<String> displayAllNoticeImages();
+	
+	void addNewNotice(Notice notice, List<NoticeInsideContentDto> noticeListDto);
+	
+	NoticeDetailDto displayNoticeDetail(int noticeId);
+	
+	List<Notice> displayAllNotice();
+	
+	Map<String, Object> getNoticeForPaging(int pageNo, int rows, String status, String keyword);
+	
+	void increaseViewCount(int noticeId);
+	
+}

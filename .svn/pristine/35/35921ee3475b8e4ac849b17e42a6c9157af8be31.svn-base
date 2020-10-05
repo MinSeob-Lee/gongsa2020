@@ -1,0 +1,276 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>같이 보자! 공공연한사이</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.color.js"></script>
+<script type="text/javascript" src="/resources/js/custom.js"></script>
+<script type="text/javascript" src="/resources/js/credit.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+</head>
+<style>
+	#chartdiv_1 {
+	  width: 100%;
+	  height: 500px;
+}
+
+	#chartdiv {
+	  width: 100%;
+	  height: 500px;
+}
+</style>
+<body>
+	<div class="header">
+		<%@ include file="../common/navi.jsp"%>
+	</div>
+	<div class="body" style="margin-top: 200px;">
+		<div class="container" style="margin-bottom: -100px;">
+			<div class="row">
+				<div class="col-3">
+					<div class="card text-center" style="height:700px;">
+						<div class="card-header">
+							<div>매출분석</div>
+						</div>
+						<div class="card-body"><button class="btn btn-outline-success btn-block">결제 현황</button></div>
+						<div class="card-body"><button class="btn btn-outline-success btn-block">결제 수단</button></div>
+						<div class="card-body"><button class="btn btn-outline-success btn-block">총    매출</button></div>
+					</div>
+				</div>
+				<div class="col-9">
+					<div id="chartdiv_1"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript" src="/resources/jquery/jquery.min.js"></script>
+<script type="text/javascript">
+	am4core.ready(function() {
+
+	// Themes begin
+	am4core.useTheme(am4themes_animated);
+	// Themes end
+
+	var chart = am4core.create("chartdiv", am4charts.XYChart);
+
+	chart.data = [{
+	 "country": "USA",
+	 "visits": 2025
+	}, {
+	 "country": "China",
+	 "visits": 1882
+	}, {
+	 "country": "Japan",
+	 "visits": 1809
+	}, {
+	 "country": "Germany",
+	 "visits": 1322
+	}, {
+	 "country": "UK",
+	 "visits": 1122
+	}, {
+	 "country": "France",
+	 "visits": 1114
+	}, {
+	 "country": "India",
+	 "visits": 984
+	}, {
+	 "country": "Spain",
+	 "visits": 711
+	}, {
+	 "country": "Netherlands",
+	 "visits": 665
+	}, {
+	 "country": "Russia",
+	 "visits": 580
+	}, {
+	 "country": "South Korea",
+	 "visits": 443
+	}, {
+	 "country": "Canada",
+	 "visits": 441
+	}];
+
+	chart.padding(40, 40, 40, 40);
+
+	var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+	categoryAxis.renderer.grid.template.location = 0;
+	categoryAxis.dataFields.category = "country";
+	categoryAxis.renderer.minGridDistance = 60;
+	categoryAxis.renderer.inversed = true;
+	categoryAxis.renderer.grid.template.disabled = true;
+
+	var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+	valueAxis.min = 0;
+	valueAxis.extraMax = 0.1;
+	//valueAxis.rangeChangeEasing = am4core.ease.linear;
+	//valueAxis.rangeChangeDuration = 1500;
+
+	var series = chart.series.push(new am4charts.ColumnSeries());
+	series.dataFields.categoryX = "country";
+	series.dataFields.valueY = "visits";
+	series.tooltipText = "{valueY.value}"
+	series.columns.template.strokeOpacity = 0;
+	series.columns.template.column.cornerRadiusTopRight = 10;
+	series.columns.template.column.cornerRadiusTopLeft = 10;
+	//series.interpolationDuration = 1500;
+	//series.interpolationEasing = am4core.ease.linear;
+	var labelBullet = series.bullets.push(new am4charts.LabelBullet());
+	labelBullet.label.verticalCenter = "bottom";
+	labelBullet.label.dy = -10;
+	labelBullet.label.text = "{values.valueY.workingValue.formatNumber('#.')}";
+
+	chart.zoomOutButton.disabled = true;
+
+	// as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
+	series.columns.template.adapter.add("fill", function (fill, target) {
+	 return chart.colors.getIndex(target.dataItem.index);
+	});
+
+	setInterval(function () {
+	 am4core.array.each(chart.data, function (item) {
+	   item.visits += Math.round(Math.random() * 200 - 100);
+	   item.visits = Math.abs(item.visits);
+	 })
+	 chart.invalidateRawData();
+	}, 2000)
+
+	categoryAxis.sortBySeries = series;
+
+	}); // end am4core.ready()
+	
+	// example2	
+	
+	am4core.ready(function() {
+
+		// Themes begin
+		am4core.useTheme(am4themes_animated);
+		// Themes end
+
+
+
+		var chart = am4core.create('chartdiv_1', am4charts.XYChart)
+		chart.colors.step = 2;
+
+		chart.legend = new am4charts.Legend()
+		chart.legend.position = 'top'
+		chart.legend.paddingBottom = 20
+		chart.legend.labels.template.maxWidth = 95
+
+		var xAxis = chart.xAxes.push(new am4charts.CategoryAxis())
+		xAxis.dataFields.category = 'category'
+		xAxis.renderer.cellStartLocation = 0.1
+		xAxis.renderer.cellEndLocation = 0.9
+		xAxis.renderer.grid.template.location = 0;
+
+		var yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+		yAxis.min = 0;
+
+		function createSeries(value, name) {
+		    var series = chart.series.push(new am4charts.ColumnSeries())
+		    series.dataFields.valueY = value
+		    series.dataFields.categoryX = 'category'
+		    series.name = name
+
+		    series.events.on("hidden", arrangeColumns);
+		    series.events.on("shown", arrangeColumns);
+
+		    var bullet = series.bullets.push(new am4charts.LabelBullet())
+		    bullet.interactionsEnabled = false
+		    bullet.dy = 30;
+		    bullet.label.text = '{valueY}'
+		    bullet.label.fill = am4core.color('#ffffff')
+
+		    return series;
+		}
+
+		chart.data = [
+		    {
+		        category: '2020-05',
+		        first: 40,
+		        second: 55,
+		        third: 60
+		    },
+		    {
+		        category: '2020-06',
+		        first: 30,
+		        second: 78,
+		        third: 69
+		    },
+		    {
+		        category: '2020-07',
+		        first: 27,
+		        second: 40,
+		        third: 45
+		    },
+		    {
+		        category: '2020-08',
+		        first: 50,
+		        second: 33,
+		        third: 22
+		    }
+		]
+
+
+		createSeries('first', '신용카드');
+		createSeries('second', '무통장입금');
+
+		function arrangeColumns() {
+
+		    var series = chart.series.getIndex(0);
+
+		    var w = 1 - xAxis.renderer.cellStartLocation - (1 - xAxis.renderer.cellEndLocation);
+		    if (series.dataItems.length > 1) {
+		        var x0 = xAxis.getX(series.dataItems.getIndex(0), "categoryX");
+		        var x1 = xAxis.getX(series.dataItems.getIndex(1), "categoryX");
+		        var delta = ((x1 - x0) / chart.series.length) * w;
+		        if (am4core.isNumber(delta)) {
+		            var middle = chart.series.length / 2;
+
+		            var newIndex = 0;
+		            chart.series.each(function(series) {
+		                if (!series.isHidden && !series.isHiding) {
+		                    series.dummyData = newIndex;
+		                    newIndex++;
+		                }
+		                else {
+		                    series.dummyData = chart.series.indexOf(series);
+		                }
+		            })
+		            var visibleCount = newIndex;
+		            var newMiddle = visibleCount / 2;
+
+		            chart.series.each(function(series) {
+		                var trueIndex = chart.series.indexOf(series);
+		                var newIndex = series.dummyData;
+
+		                var dx = (newIndex - trueIndex + middle - newMiddle) * delta
+
+		                series.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
+		                series.bulletsContainer.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
+		            })
+		        }
+		    }
+		}
+
+		}); // end am4core.ready()
+</script>
+</body>
+</html>

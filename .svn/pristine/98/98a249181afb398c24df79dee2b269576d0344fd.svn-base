@@ -1,0 +1,56 @@
+package com.sample.dao;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import com.sample.dto.PerformanceDto;
+import com.sample.web.view.PerformanceSchedule;
+import com.sample.web.view.PerformanceSeatPrice;
+import com.sample.dto.PerformanceDetailDto;
+
+public interface PerformanceDao {
+	//
+	PerformanceDto selectPerformance(int performanceId);
+	
+	String[] getGenreById(int id);
+	
+	String[] getGenreByCategory(String category);
+	
+	List<PerformanceDetailDto> getPerformancesByCategory(String category);		
+	
+	PerformanceDetailDto getPerformanceById(int id);
+	
+	List<PerformanceDetailDto> searchPerformance(Map<String, Object> map);
+
+	/**
+	 * 공연 상영날짜로 공연 찾아오는 메소드(오버라이딩 Date)
+	 * @param showDate
+	 */
+	List<PerformanceSchedule> selectPerformanceByDate(Date showDate);
+	
+	/**
+	 *  공연 상영날짜로 공연 찾아오는 메소드(오버라이딩 String)
+	 * @param showDate
+	 */
+	List<PerformanceSchedule> selectPerformanceByDate(String showDate);
+	
+	/**
+	 * performance_main 테이블에서 performace id로 PerformanceDetailDto 객체를 반환받는다.
+	 * @param performanceMainId
+	 * @return PerformanceDetailDto
+	 */
+	PerformanceDetailDto getPerformanceByPerformanceMainId(int performanceMainId);
+	
+	/**
+	 * 공연메인아이디로 공연스케쥴을 찾아오는 메소드
+	 * @param performanceMainId
+	 */
+	PerformanceSchedule getScheduleByPerformanceMainId(int performanceMainId);
+
+	/**
+	 * 공연아이디로 좌석가격 리스트를 찾아오는 메소드
+	 * @param performanceId
+	 */
+	List<PerformanceSeatPrice> getPerformanceSeatPrice(int performanceId);
+}

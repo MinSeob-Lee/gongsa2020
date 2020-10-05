@@ -1,0 +1,39 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/resources/css/style.css" />
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+ <link href="https://ionicframework.com/css/site.css?2" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script type="text/javascript" src="/resources/js/custom.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.color.js"></script>
+<script src="https://ionicframework.com/js/site.js"></script>
+</head>
+<body>
+	<div class="header">
+		<%@ include file="../common/navi.jsp" %>
+	</div>
+	<div class="body">
+	
+	
+	
+	
+	
+	</div>
+	<div class="footer">
+		<%@ include file="../common/footer.jsp" %>
+	</div>
+
+</body>
+</html>

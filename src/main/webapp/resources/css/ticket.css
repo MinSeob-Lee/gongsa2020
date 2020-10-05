@@ -1,0 +1,115 @@
+ 
+ 
+
+.item {
+  width: 700px;
+  float: left;
+  padding: 0 20px;
+  background: #fff;
+
+  overflow: hidden;
+  margin: 10px
+}
+.item-right, .item-left {
+  float: left;
+ 
+}
+.item-right {
+  padding-top:30px;
+  padding-right:20px;
+  width: 25%;
+  position: relative;
+  height: 286px
+}
+.item-right .up-border, .item-right .down-border {
+    padding: 14px 15px;
+    background-color: #ddd;
+    border-radius: 50%;
+    position: absolute
+}
+.item-right .up-border {
+  top: -8px;
+  right: -17px;
+}
+.item-right .down-border {
+  bottom: -10px;
+  right: -17px;
+}
+.item-right .num {
+  font-size: 50px;
+  text-align: center;
+  color: #111
+}
+.item-right .day,.item-left .event {
+  color: #555;
+  font-size: 20px;
+  margin-bottom: 9px;
+}
+.item-right .day {
+  text-align: center;
+  font-size: 25px;
+}
+.item-left {
+  width: 71%;
+  padding: 34px 0px 19px 46px;
+  border-left: 3px dotted #999;
+} 
+.item-left .title {
+  color: #111;
+  font-size: 34px;
+  margin-bottom: 12px
+}
+.item-left .sce {
+  margin-top: 5px;
+  display: block
+}
+.item-left .sce .icon, .item-left .sce p,
+.item-left .loc .icon, .item-left .loc p{
+    float: left;
+    word-spacing: 5px;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 10px;
+}
+.item-left .sce .icon, .container .item-left .loc .icon {
+  margin-right: 10px;
+  font-size: 20px;
+  color: #666
+}
+.item-left .loc {display: block}
+.fix {clear: both}
+.item .tickets, .booked, .cancel{
+    color: #fff;
+    padding: 6px 14px;
+    float: right;
+    margin-top: 10px;
+    font-size: 18px;
+    border: none;
+    cursor: pointer
+}
+.item .tickets {background: #777}
+.item .booked {background: #3D71E9}
+.item .cancel {background: #DF5454}
+.linethrough {text-decoration: line-through}
+@media only screen and (max-width: 1150px) {
+.item {
+    width: 100%;
+    margin-right: 20px
+  }
+
+}
+.user-profile {
+  margin: auto;
+  width: 25em; 
+  height: 11em;
+ 
+  border-radius: .3em;
+}
+.user-profile > img.avatar {
+  padding: .7em;
+  margin-left: .3em;
+  margin-top: .3em;
+  height: 8em;
+  width: 8em;
+  border-radius: 18em;
+}

@@ -1,0 +1,329 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>같이 보자! 공공연한사이</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
+<link rel="stylesheet" href="/resources/css/card.css" />
+<link rel="stylesheet" href="/resources/css/mypage.css" />
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.4.4/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.color.js"></script>
+<script type="text/javascript" src="/resources/js/custom.js"></script>
+<script type="text/javascript" src="/resources/js/mypage/mypagemain.js"></script>
+</head>
+<body>
+	<div class="header">
+		<%@ include file="../common/navi.jsp"%>
+	</div>
+	<div class="body mt-5">
+		<div class="container-fluid mb-4">
+			<div class="row">
+		<%@ include file="./mypagemenubar.jsp" %>
+				<div class="col-8 mt-4">
+					<div class="container">
+						<%@ include file="./mypageheader.jsp" %>
+						
+						<div class="mypage-card-header mt-3 ">
+							<div class="row">
+								<div class="col-9">
+									<h2 class="font-weight-bold">최근 예매내역</h2>
+								</div>
+								<div class="col-3 mt-2 text-right">
+									<a href="/mypage/myperformance.do">더보기</a><i
+										class="fas fa-chevron-right"></i>
+								</div>
+							</div>
+						</div>
+
+						<c:choose>
+
+							<c:when test="${lastReserve eq null }">
+								<div class="card mt-3">
+									<div class="card-body">
+										<div class="row">
+											<div class="col-6">
+												<div class="row">
+													<div class="col-12">
+														<h4>아직 한번도 예매를 하지 않으셨네요!</h4>
+														<span> 공공연한 사이와 함께 공연도 보시고, <br /> 메이트 찾기 기능을 통
+															공연을 같이 볼 친구도 찾아보세요!
+														</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</c:when>
+
+							<c:otherwise>
+								<div class="card mt-3">
+									<div class="card-body reserve-list"  data-reserve-id="${lastReserve.id}">
+										<div class="row">
+											<div class="col-3">
+												<img style="width: 200px; height: 200px;"
+													src="/resources/sample-images/${lastReserve.performance.imagePath }"
+													class="rounded float-left" alt="...">
+											</div>
+											<div class="col-9">
+												<div class="row">
+													<div class="col-12">
+														<div class="row">
+															<div class="col-12">
+																<h1 class="font-weight-bolder">${lastReserve.performance.title }</h1>
+															</div>
+														</div>
+													</div>
+
+
+													<div class="col-12">
+														<div class="row">
+															<div class="col-6">
+																<div class="row">
+
+																	<div class="col-12">
+																		<i class="fas fa-star"></i> <span>예매날</span>
+																		<div>
+																			<span><fmt:formatDate
+																					value="${lastReserve.regDate }"
+																					pattern="yyyy.mm.dd" /></span>
+																		</div>
+																	</div>
+																	<div class="col-12">
+																		<i class="far fa-calendar-alt"></i> <span>관람일</span>
+																		<div>
+																			<span>2021.05.07</span> <span>~</span> <span>2021.05.08</span>
+																		</div>
+																	</div>
+																	<div class="col-12">
+																		<i class="fas fa-ticket-alt"></i> <span>티켓번호</span>
+																		<div>
+																			<span>A1H210543</span>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<div class="col-6">
+																<div class="row">
+																	<div class="col-12">
+																		<i class="fas fa-map-marker-alt"></i><span>공연장</span>
+																		<div>
+																			<span>2021.05.07</span>
+																		</div>
+																	</div>
+																	<div class="col-12">
+																		<i class="fas fa-user"></i> <span>예매자</span>
+																		<div>
+																			<span>userid</span>
+																		</div>
+																	</div>
+																	<div class="col-12">
+																		<i class="fas fa-arrow-alt-circle-right"></i> <span>예매상태</span>
+																		<div>
+																			<span>결제완료</span>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</c:otherwise>
+
+						</c:choose>
+
+						<div class="mypage-card-header mt-3 ">
+							<div class="row">
+								<div class="col-9">
+									<h2 class="font-weight-bold">나의 관심 공연</h2>
+								</div>
+								<c:if test="${user.likes.size() > 4 }">
+									<div class="col-3 mt-2 text-right">
+										<span>더보기</span><i class="fas fa-chevron-right"></i>
+									</div>
+								</c:if>
+							</div>
+						</div>
+						<c:choose>
+							<c:when test="${user.likes eq null }">
+								<div class="card mt-3">
+									<div class="card-body">
+										<div class="row">
+											<div class="col-12">
+												<h4>등록된 관심공연이 없어요!</h4>
+												<span> 관심공연을 등록하고 공연 소식을 받아보세요! </span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</c:when>
+							<c:when test="${user.likes.size() eq 0 }">
+								<div class="card mt-3">
+									<div class="card-body">
+										<div class="row">
+											<div class="col-12">
+												<h4>등록된 관심공연이 없어요!</h4>
+												<span> 관심공연을 등록하고 공연 소식을 받아보세요! </span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<div class="card mt-3">
+									<div class="card-body">
+										<div class="row">
+
+											<c:forEach items="${user.likes }" var="performance" begin="0"
+												end="3" step="1">
+												<!-- 관심 공연리스트 -->
+												<div class="col-3">
+													<div class="row">
+														<div class="col-12">
+															<img style="width: 200px; height: 200px;"
+																src="/resources/sample-images/${performance.imagePath }"
+																class="rounded float-left" alt="...">
+														</div>
+														<div class="col-12 text-center mt-1">
+															<div class="row">
+																<div class="col-12">
+																	<h3 class="font-weight-bold">
+																		<c:choose>
+																			<c:when test="${fn:length(performance.title) > 8 }">
+																	${fn:substring(performance.title, 0, 8) }...
+																	</c:when>
+																			<c:otherwise>
+																	${performance.title }
+																	</c:otherwise>
+																		</c:choose>
+
+
+																	</h3>
+																</div>
+																<div class="col-12">
+																	<i class="fas fa-map-marker-alt"></i> <span>${performance.hallinfo.name }</span>
+																</div>
+																<div class="col-12">
+																	<i class="far fa-calendar-alt"></i> <span><fmt:formatDate
+																			value="${performance.startDate }"
+																			pattern="yyyy.mm.dd" /> </span> ~ <span><fmt:formatDate
+																			value="${performance.endDate }" pattern="yyyy.mm.dd" />
+																	</span>
+																</div>
+															</div>
+														</div>
+
+													</div>
+												</div>
+												<!-- 관심공연리스트 -->
+											</c:forEach>
+										</div>
+									</div>
+								</div>
+
+							</c:otherwise>
+						</c:choose>
+
+
+						<div class="mypage-card-header mt-3 ">
+							<div class="row">
+								<div class="col-9">
+									<h2 class="font-weight-bold">나의 문의 내역</h2>
+								</div>
+								<div class="col-3 mt-2 text-right">
+								<a href="/qna/list.do" class="text-decoration-none">								
+									<span>더보기</span><i class="fas fa-chevron-right"></i>
+								</a>
+								</div>
+							</div>
+						</div>
+						<div class="card mt-3">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-12">
+										<table class="table table-bordered table-hover">
+											<colgroup>
+												<col width="10%">
+												<col width="15%">
+												<col width="45%">
+												<col width="10%">
+												<col width="10%">
+												<col width="10%">
+											</colgroup>
+											<thead class="table-dark">
+												<tr
+													style="background-color: black !important; color: white !important;">
+													<th>No.</th>
+													<th>분 류</th>
+													<th style="text-align: left !important;">제 목</th>
+													<th>작성자</th>
+													<th>조회수</th>
+													<th>등록일</th>
+												</tr>
+											</thead>
+											<tbody id="qna-main-tbody">
+												<c:choose>
+													<c:when test="${qnaList eq null }">
+														<tr>
+															<td colspan="6" rowspan="2">등록하신 질문이 없습니다.</td>
+														</tr>
+													</c:when>
+													<c:when test="${qnaList.size() eq 0 }">
+														<tr>
+															<td colspan="6" rowspan="2">등록하신 질문이 없습니다.</td>
+														</tr>
+													</c:when>
+													<c:otherwise>
+														<c:forEach items="${qnaList }" var="qna" begin="0" end="2"
+															step="1">
+															<tr id="qna-${qna.id }">
+																<td>${qna.id }</td>
+																<td>${qna.category }</td>
+																<td style="text-align: left !important;" class="title"
+																	id="qna-title">${qna.questionTitle }<c:if
+																		test="${qna.opened }">
+																		<span><i class="fas fa-lock fa-1x"></i></span>
+																	</c:if>
+																</td>
+																<td>${qna.questionUser.nickname }</td>
+																<td>${qna.hits }</td>
+																<td><fmt:formatDate value="${qna.regDate }"
+																		pattern="yyyy.mm.dd" /></td>
+															</tr>
+														</c:forEach>
+													</c:otherwise>
+												</c:choose>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="footer">
+			<%@ include file="../common/footer.jsp"%>
+		</div>
+	</div>
+</body>
+</html>

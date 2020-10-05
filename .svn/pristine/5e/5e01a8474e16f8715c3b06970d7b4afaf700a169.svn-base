@@ -1,0 +1,48 @@
+$(function () {
+    activateMenu()
+    generateCouponList()
+})
+
+const activateMenu = ()=>{
+    $("#mypagemenu li").click(function(){
+        const req = $(this).data('href')
+        console.log('/mypage/'+req)
+        $(location).attr('href', req)
+    })
+}
+
+const generateCouponList = ()=>{
+    const url = '/mypage/myCoupon.do'
+    $.ajax({
+        url:url,
+        type:'POST',
+        dataType:'JSON'
+    }).done(result=>{
+
+        const coupons = result.coupons
+
+        coupons.forEach(coupon=>{
+            const newId = `coupon-list-${coupon.id}`
+            const item = `<tr id="${newId}">
+                            <td class="coupon-name"></td>
+                            <td class="coupon-expDate"></td>
+                            <td class="coupon-value"></td>
+						</tr>`
+            $(`#list-body`).append(item)
+            $(`#${newId} .coupon-name`).text(coupon.name)
+            if(coupon.value > 99){
+                $(`#${newId} .coupon-value`).text(`${coupon.value} 원`)
+            }else{
+                $(`#${newId} .coupon-value`).text(`${coupon.value}%`)
+            }
+            $(`#${newId} .coupon-expDate`).text(` ~ ${dateToYMD(new Date(coupon.expDate))}`)
+        })
+    }).fail({
+
+    }).always({
+
+    })
+}
+const dateToYMD = function (date) {
+    return `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}`;
+}

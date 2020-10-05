@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sample.dao.PerformanceDao">
+	<resultMap type="PerformanceDto" id="performanceDto">
+		<result property="performanceId" column="performanceId" />
+		<result property="title" column="title" />
+		<result property="category" column="category" />
+		<result property="startDate" column="startDate" />
+		<result property="endDate" column="endDate" />
+		<result property="rating" column="rating" />
+		<result property="provider" column="provider" />
+		<result property="point" column="point" />
+		<result property="likes" column="likes" />
+		<result property="imagePath" column="imagePath" />
+		<result property="explain" column="explain" />
+		<association property="hallinfo" javaType="HallInfo">
+			<result property="id" column="hallId" />
+			<result property="name" column="name" />
+			<result property="address" column="address" />
+		</association>
+		<collection property="genres" javaType="list"
+			select="getGenreById" column="performanceId">
+			<result column="genre" />
+		</collection>
+	</resultMap>
+	<select id="selectPerformance" parameterType="int"
+		resultMap="performanceDto"> SELECT distinct A.id as performanceId, A.title, A.category,
+		A.startDate, A.endDate, A.rating, A.runningTime, A.provider, A.point,
+		A.likes, A.imagePath, A.`explain`, C.id as hallId, C.name, C.address from
+		performance_info A join performance_main B on A.id = B.infoId join
+		hall_info_main C on B.hallId = C.id where A.id = #{value};
+	</select>
+	<select id="getGenreById" parameterType="int"
+		resultType="string"> SELECT genre FROM performance_genre WHERE id = #{value}
+	</select>
+
+	<select id="selectPerformanceByDate" parameterType="Date"
+		resultType="PerformanceSchedule">
+		SELECT
+		id,
+		infoId,
+		hallId,
+		showDate,
+		showTime,
+		showNumber
+		FROM
+		performance_main
+		WHERE
+		showDate = #{value};
+	</select>
+
+	<!-- <resultMap type="PerformanceDto" id="PerformanceResult"> <result property="performanceId" 
+		column="performanceId"/> <result property="title" column="title"/> <result 
+		property="category" column="category"/> <result property="startDate" column="startDate"/> 
+		<result property="endDate" column="endDate"/> <result property="rating" column="rating"/> 
+		<result property="runnigTime" column="runnigTime"/> <result property="provider" 
+		column="provider"/> <result property="point" column="point"/> <result property="likes" 
+		column="likes"/> <result property="imagePath" column="imagePath"/> <result 
+		property="explain" column="explain"/> <result property="hallId" column="hallId"/> 
+		<result property="showDate" column="showDate"/> <result property="showTime" 
+		column="showTime"/> <result property="showNumber" column="showNumber"/> <result 
+		property="name" column="name"/> <result property="address" column="address"/> 
+		<result property="gpsX" column="gpsX"/> <result property="gpsY" column="gpsY"/> 
+		<result property="seatRate" column="seatRate"/> <result property="price" 
+		column="price"/> <collection column="infoId" property="seatPrice" select="getPerformanceSeatPrice" 
+		ofType="PerformanceSeatPrice" javaType="List"> <result property="infoId" 
+		column="infoId" /> <result property="seatRate" column="seatRate" /> <result 
+		property="price" column="price" /> </collection> </resultMap> -->
+
+	<select id="getPerformanceSeatPrice" parameterType="int"
+		resultType="PerformanceSeatPrice">
+		select
+		infoId,
+		seatRate,
+		price
+		from
+		performance_seat_price
+		where
+		infoId = #{value}
+	</select>
+
+	<select id="selectPerformanceByPerformanceMainId"
+		parameterType="int" resultType="PerformanceDto">
+		SELECT
+		id,
+		infoId as performanceId,
+		hallId,
+		showDate,
+		showTime,
+		showNumber
+		FROM
+		performance_main A
+		WHERE
+		id = #{value}
+	</select>
+
+	<resultMap type="PerformanceDetailDto"
+		id="PerformanceDetailDtoResultMap">
+		<id column="id" property="id" />
+		<result column="title" property="title" />
+		<result column="category" property="category" />
+		<result column="provider" property="provider" />
+		<result column="rating" property="rating" />
+		<result column="runningTime" property="runningTime" />
+		<result column="startDate" property="startDate" />
+		<result column="endDate" property="endDate" />
+		<result column="point" property="point" />
+		<result column="likes" property="likes" />
+		<result column="imagePath" property="imagePath" />
+		<result column="explain" property="explain" />
+		<result column="hallName" property="hallName" />
+		<result column="hallAddress" property="hallAddress" />
+		<collection property="genres" select="getGenreById"
+			column="id" ofType="string" />
+
+	</resultMap>
+
+	<select id="getPerformancesByCategory" parameterType="string"
+		resultMap="PerformanceDetailDtoResultMap">
+		SELECT
+		distinct A.id as id,
+		A.title as title,
+		A.category as category,
+		A.provider as provider,
+		A.rating as rating,
+		A.runningTime as runningTime,
+		A.startDate as startDate,
+		A.endDate as endDate,
+		A.point as point,
+		A.likes as likes,
+		A.imagePath as imagePath,
+		A.`explain` as `explain`,
+		C.name as hallName,
+		C.address as hallAddress
+		FROM
+		performance_info A
+		JOIN
+		performance_main B ON A.id = B.infoId
+		JOIN
+		hall_info_main C ON C.id =B.hallId
+		WHERE
+		A.category= #{value}
+		ORDER BY
+		A.id
+	</select>
+
+	<select id="getPerformanceById" parameterType="int"
+		resultMap="PerformanceDetailDtoResultMap">
+		SELECT
+		distinct A.id as id,
+		A.title as title,
+		A.category as category,
+		A.provider as provider,
+		A.rating as rating,
+		A.runningTime as runningTime,
+		A.startDate as startDate,
+		A.endDate as endDate,
+		A.point as point,
+		A.likes as likes,
+		A.imagePath as imagePath,
+		A.`explain` as `explain`,
+		C.name as hallName,
+		C.address as hallAddress
+		FROM
+		performance_info A
+		JOIN
+		performance_main B ON A.id = B.infoId
+		JOIN
+		hall_info_main C ON C.id =B.hallId
+		WHERE
+		A.id= #{value}
+		ORDER BY
+		A.id
+	</select>
+
+
+	<select id="getScheduleByPerformanceMainId" parameterType="int" resultType="PerformanceSchedule">
+		SELECT id, infoId, showDate, showTime, showNumber 
+		FROM performance_main
+		WHERE id = #{ performanceMainId}
+	</select>
+
+
+	<!-- <select id="selectPerformance" parameterType="int" resultType="Performance"> 
+		select id, title, category, startDate, endDate, rating, runningTime, provider, 
+		point, likes, imagePath, `explain` from performance_info A join performance_main 
+		B on A.id = B.infoId join hall_info_main C on B.hallId = C.id where A.id 
+		= #{value} </select> -->
+</mapper>

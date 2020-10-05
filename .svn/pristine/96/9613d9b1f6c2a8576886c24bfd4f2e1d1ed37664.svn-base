@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 
+/*해당 메이트 방의 공연 */
+SELECT pmain.id, pmain.showdate, pmain.showTime, pmain.showNumber, pinfo.title, pinfo.category, pinfo.startDate, pinfo.endDate, 
+		 pinfo.rating, pinfo.runningTime, pinfo.provider, pinfo.imagePath, pinfo.`explain`,
+		 pgenre.genre, hmain.name, hmain.address, hmain.gpsX, hmain.gpsY
+FROM performance_main pmain
+JOIN performance_info pinfo ON pmain.infoId = pinfo.id
+JOIN performance_genre pgenre ON pgenre.id = pinfo.id
+JOIN hall_info_main hmain ON pmain.hallId = hmain.id
+WHERE pmain.id = 11;
+/* 해당 공연, 회차의, 해당 메이트 방의 유저 리스트 */
+
+SELECT umain.id, umain.nickname  FROM mate_main mmain
+JOIN mate_members mmem ON mmain.id = mmem.id
+JOIN user_main umain ON umain.id = mmem.userId
+WHERE mmain.id = 1;
+/* 해당 공연, 회차의  메이트 방 리스트 all */
+SELECT mmain.id, mmain.performanceId, mmain.seatGroup, mcat.id, mcat.category, mmain.groupSize, mmain.seatRate
+FROM mate_main mmain
+JOIN mate_category mcat ON mmain.category = mcat.id
+WHERE mmain.performanceId = 11;
+/*메이트방 태그들*/
+SELECT mmain.id, mtag.tag
+FROM mate_tag mtag
+right outer JOIN mate_main mmain ON mmain.id = mtag.id
+WHERE mmain.id = 1;
+ -->
+
+<mapper namespace="com.sample.dao.MateDao">
+	
+	<resultMap type="PerformanceSchedule" id="performanceScheduleMap">
+		<result property="id" column="id"/>
+		<result property="showDate" column="showDate"/>
+		<result property="showTime" column="showTime"/>
+		<result property="showNumber" column="showNumber"/>
+		<collection property="hallinfo" column="id" select="getMateHallInfoByPerformanceId" />
+	</resultMap>
+	
+	<resultMap type="Performance" id="performanceMap">
+		<result property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="category" column="category"/>
+		<result property="endDate" column="endDate"/>
+		<result property="rating" column="rating"/>
+		<result property="runnigTime" column="runnigTime"/>
+		<result property="provider" column="provider"/>
+		<result property="point" column="point"/>
+		<result property="likes" column="likes"/>
+		<result property="imagePath" column="imagePath"/>
+		<result property="explain" column="explain"/>
+		<collection property="schedule" column="id" select="getPerformanceScheduleByPerformanceId"/>
+		<collection property="genre" select="getMatePerformanceGenre" column="id"/>
+	</resultMap>
+	
+
+	<resultMap type="Mate" id="mateMap">
+		<result property="id" column="id"/>
+		<result property="seatGroup" column="seatGroup"/>
+		<result property="category" column="category"/>
+		<result property="groupsize" column="groupsize"/>
+		<result property="seatRate" column="seatRate"/>
+		<association property="performance" column="performanceId" select="getMatePerformanceByPerformanceId" />
+		<collection property="mateMembers" select="getMateUserByMateId" column="id"/>
+		<collection property="mateTags" select="getMateTagByMateId" column="id"/>
+	</resultMap>
+
+<!-- mateSeach -->
+		<!-- 유저 아이디 , 퍼포먼스를 입력 받아, 좌석 등급에 해당하는 메이트 정보를 모두 구함 -->
+	<select id="getAllMates" resultMap="mateMap" parameterType="map">
+			SELECT
+				 mmain.id,
+			 	 mmain.performanceId, 
+				 mmain.seatGroup,
+				 mcat.category, 
+				 mmain.groupSize, 
+				 mmain.seatRate,
+				 mmain.status
+			FROM mate_main mmain
+			JOIN mate_category mcat ON mcat.id = mmain.category
+			<where>
+				mmain.seatRate = (SELECT mmain.seatRate 
+												FROM mate_main mmain
+												JOIN mate_members mmem ON mmain.id = mmem.id
+												WHERE mmain.performanceId = #{performanceId}
+												AND mmem.userId = #{userId}) 
+				<if test="categoryId != 0">
+					and mmain.category in (#{categoryId})
+				</if>
+				<if test="groupSize != 0">
+					and mmain.groupSize in (#{groupSize})
+				</if>
+				<if test="isFull != null and isEmplty !=null">
+					AND mmain.`status` IN ('모집중','빈방') 
+				</if>
+				<if test="isFull != null and isEmpty == null">
+					AND mmain.`status` IN ('모집중') 
+				</if>
+				<if test="isFull == null and isEmpty != null">
+					AND mmain.`status` IN ('빈방') 
+				</if>
+				<if test="isFull == null and isEmpty == null">
+					AND mmain.`status` IN ('모집완료') 
+				</if>
+			</where>
+			limit #{beginIndex}, #{endIndex}	
+											
+	</select>
+	<select id="getAllMatesCount" parameterType="map" resultType="int">
+			SELECT
+				count(*)
+			FROM mate_main mmain
+			JOIN mate_category mcat ON mcat.id = mmain.category
+			<where>
+				mmain.seatRate = (SELECT mmain.seatRate 
+												FROM mate_main mmain
+												JOIN mate_members mmem ON mmain.id = mmem.id
+												WHERE mmain.performanceId = #{performanceId}
+												AND mmem.userId = #{userId}) 
+				<if test="categoryId != 0">
+					and mmain.category in (#{categoryId})
+				</if>
+				<if test="groupSize != 0">
+					and mmain.groupSize in (#{groupSize})
+				</if>
+				<if test="isFull != null and isEmplty !=null">
+					AND mmain.`status` IN ('모집중','빈방') 
+				</if>
+				<if test="isFull != null and isEmpty == null">
+					AND mmain.`status` IN ('모집중') 
+				</if>
+				<if test="isFull == null and isEmpty != null">
+					AND mmain.`status` IN ('빈방') 
+				</if>
+				<if test="isFull == null and isEmpty == null">
+					AND mmain.`status` IN ('모집완료') 
+				</if>
+			</where>
+				
+	</select>
+<!-- mate Info -->
+	<select id="getAllMatesInfo" resultMap="mateMap">
+				SELECT
+					 mmain.id,
+				 	 mmain.performanceId, 
+					 mmain.seatGroup,
+					 mcat.category, 
+					 mmain.groupSize, 
+					 mmain.seatRate,
+					 mmain.status
+				FROM mate_main mmain
+				JOIN mate_category mcat ON mcat.id = mmain.category
+				where
+				mmain.seatRate = (SELECT mmain.seatRate 
+									FROM mate_main mmain
+									JOIN mate_members mmem ON mmain.id = mmem.id
+									WHERE mmain.performanceId = #{performanceId}
+									AND mmem.userId = #{userId}) 
+												
+		</select>
+		<select id="getAllMatesInfoCount" resultType="int">
+				SELECT
+					count(*)
+				FROM mate_main mmain
+				JOIN mate_category mcat ON mcat.id = mmain.category
+				where
+				mmain.seatRate = (SELECT mmain.seatRate 
+									FROM mate_main mmain
+									JOIN mate_members mmem ON mmain.id = mmem.id
+									WHERE mmain.performanceId = #{performanceId}
+									AND mmem.userId = #{userId}) 
+												
+		</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<select id="getMateRoomByPerformanceIdAndMateId" parameterType="int" resultMap="mateMap">
+		SELECT 
+				mmain.id, 
+				mmain.performanceId, 
+				mmain.seatGroup,
+				mcat.category,
+				mmain.groupSize, 
+				mmain.seatRate,
+				mmain.status 
+		FROM mate_main mmain
+		JOIN mate_category mcat ON mmain.category = mcat.id
+		WHERE mmain.id = #{mateId}
+		AND mmain.performanceId = #{performanceId}
+	</select>
+	<select id="getMatesByPerformanceId" parameterType="int" resultMap="mateMap">
+		SELECT 
+				mmain.id, 
+				mmain.performanceId, 
+				mmain.seatGroup, 
+				mcat.category,
+				mmain.groupSize, 
+				mmain.seatRate,
+				mmain.status
+		FROM mate_main mmain
+		JOIN mate_category mcat ON mcat.id = mmain.category
+		WHERE mmain.performanceId = #{value}
+	</select>
+	<select id="getMateUserByMateId" parameterType="int" resultType="User">
+		SELECT mmem.userId as id, umain.nickname
+			FROM mate_members mmem
+			JOIN mate_main mmain ON mmain.id = mmem.id
+			JOIN user_main umain ON mmem.userId = umain.id
+			WHERE mmain.id = #{value}
+	</select>
+	<select id="getMateTagByMateId" resultType="com.sample.web.view.MateTag" parameterType="int">
+			SELECT mmain.id 		as mateId,
+				   mtag.tag 		as tagName
+			FROM mate_tag mtag
+			right outer JOIN mate_main mmain ON mmain.id = mtag.id
+			WHERE mmain.id = #{value}
+	</select>
+	<select id="getMatePerformanceByPerformanceId" parameterType="int" resultMap="performanceMap">
+		SELECT 	
+				pmain.id, 
+				pinfo.title, 
+				pinfo.category, 
+				pinfo.startDate, 
+				pinfo.endDate, 
+				pinfo.rating, 
+				pinfo.runningTime, 
+				pinfo.provider, 
+				pinfo.point, 
+				pinfo.likes,
+				pinfo.imagePath , 
+				pinfo.`explain`
+		FROM performance_main pmain
+		JOIN performance_info pinfo ON pinfo.id = pmain.infoId
+		WHERE pmain.id = #{performanceId}
+	</select>
+	<select id="getMatePerformanceGenre" parameterType="int" resultType="string">
+			SELECT genre
+			FROM
+				performance_genre pgenre
+			WHERE pgenre.id = #{value}
+	</select>
+	<select id="getPerformanceScheduleByPerformanceId" parameterType="int" resultMap="performanceScheduleMap">
+		SELECT
+				pmain.id,
+				pmain.showDate,
+				pmain.showTime,
+				pmain.showNumber 
+		FROM performance_main pmain
+		WHERE pmain.id = #{value}
+		
+	</select>
+	<select id="getMateHallInfoByPerformanceId" parameterType="int" resultType="HallInfo">
+		SELECT hmain.id, hmain.name,
+				 hmain.address, hmain.gpsX, hmain.gpsY
+		FROM hall_info_main hmain
+		JOIN performance_main pmain ON pmain.hallId = hmain.id
+		WHERE pmain.id = #{value}
+	</select>
+	<resultMap type="java.util.Map" id="categoryMap">
+		<result property="id" column="id" javaType="java.lang.Integer" />
+		<result property="category" column="category" javaType="java.lang.String"/>
+	</resultMap>
+	
+	
+	<select id="getMateAllCategory" resultMap="categoryMap">
+		SELECT id, category FROM mate_category
+	</select>
+	<select id="getCountMateByPerformanceId" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM mate_main
+		WHERE performanceid = #{value}
+	</select>
+	
+	<!-- MateTimeLine -->
+	<resultMap type="MateTimeLine" id="timelineMap">
+		<result property="id" column="mateId"/>
+		<result property="content" column="content"/>
+		<result property="regDate" column="regDate"/>
+		<collection property="user" column="userId" select="getUserMateInfoById"/>
+	</resultMap>
+	<select id="getMateTimelineByMateId" parameterType="int" resultMap="timelineMap">
+		SELECT
+			 mateId,
+			 content,
+			 regDate,
+			 userId 	as "userId"
+		FROM mate_timeline 
+		WHERE mateId = #{value}
+		order by regDate 
+	</select>
+	<select id="getUserMateInfoById" parameterType="string" resultType="User">
+		SELECT
+			 umain.id,
+			 umain.nickname,
+			 usub.grade,
+			 picon.path as iconPath
+		FROM user_main umain
+		JOIN user_sub usub ON umain.id = usub.id
+		left outer JOIN profile_icon picon ON usub.iconId = picon.id
+		WHERE umain.id = #{userId}
+	</select>
+	<resultMap type="java.util.Map" id="mateCatMap">
+		<result column="id" property="id" javaType="java.lang.String"/>
+		<result column="category" property="category" javaType="java.lang.String"/>
+	</resultMap>
+	
+	<select id="getMateCategoryByMateId" parameterType="int" resultMap="mateCatMap">
+		SELECT
+			mcat.id, 
+			mcat.category
+		FROM mate_main mmain
+		JOIN mate_category mcat ON mmain.category = mcat.id
+		WHERE mmain.id = #{value}
+	
+	</select>
+	
+	<!-- mateTimeLine Insert -->
+	<insert id="addTimeLine" parameterType="MateTimeLine">
+			INSERT INTO mate_timeline
+			(mateId, content, userId)
+			VALUES
+			(#{id}, #{content}, #{user.id} )
+	</insert>
+	
+	<!-- mateid에 해당하는 Mate객체 반환쿼리 -->
+	<select id="getMateByMateId" parameterType="int" resultType="Mate">
+		SELECT 
+				mmain.id, 
+				mmain.performanceId,
+				mmain.seatGroup, 
+				mcat.category,
+				mmain.groupSize, 
+				mmain.seatRate
+		FROM mate_main mmain
+		JOIN mate_category mcat ON mcat.id = mmain.category
+		WHERE mmain.id = #{value}
+		
+	</select>
+	<select id="getMateTimeLineCountByMateId" parameterType="int" resultType="int">
+	SELECT COUNT(*) FROM mate_timeline
+	WHERE mateId = #{value}
+	
+	</select>
+	
+	<!-- mate tag insert -->
+	<insert id="insertMateTag" parameterType="com.sample.web.view.MateTag">
+			INSERT INTO mate_tag
+			(tag,id)
+			VALUES
+			(#{tagName},#{mateId})
+	</insert>
+	<delete id="deleteMateTagAllByMateId" parameterType="int">
+		DELETE FROM mate_tag WHERE id = #{value}
+	</delete>
+	
+	<!-- matecategory Change -->
+	<update id="updateMateCategoryByMateId" parameterType="int">
+		UPDATE mate_main 
+			SET category = #{catId}
+		WHERE id = #{mateId}
+	</update>
+	
+	<!--  해당 메이트방의 멤버의 숫자를 구한다.-->
+	<select id="getMateMemberCountInMateByMateId" resultType="int">
+		SELECT COUNT(*) FROM mate_main mmain
+		JOIN mate_members mmem ON mmain.id = mmem.id
+		WHERE performanceId = #{performanceId}
+		AND mmain.id = #{mateId}
+	</select>
+
+ 	<!-- 해당 메이트를 메이트 멤버 테이블에 인서트 시킨다. -->
+	<insert id="insertMateMember">
+		INSERT INTO mate_members
+			(userId, id)
+			VALUES
+			(#{userId}, #{mateId})
+	</insert>
+	
+	<!-- 해당 메이트가 메이트 아이디에 따라서 있는지 확인하는 쿼리 -->
+	<select id="getMateUserByMateIdAndUserId" resultType="User" >
+			SELECT userId FROM mate_members
+			WHERE id = #{mateId}
+			AND userId = #{userId}
+	</select>
+<!-- mate add 관련 query -->
+	<select id="getUserExistMate" resultType="com.sample.dto.MateUserDto">
+		SELECT 
+			mmain.id 				as "mate.id",
+			mmain.performanceId 	as "performance.id",
+			mmem.userId 			as "user.id"
+		FROM mate_members mmem
+		JOIN mate_main mmain ON mmem.id = mmain.id
+		JOIN performance_main pmain ON pmain.id = mmain.performanceId
+		WHERE pmain.id = #{performanceId}
+		and mmem.userId = #{userId}
+				
+	
+	</select>
+	<select id="getReservedUser" resultType="com.sample.dto.MateUserDto">
+	SELECT
+		 reserveUser AS "user.id",
+		 performanceId AS "performance.id" 
+		 FROM reserve_main 
+	WHERE reserveUser = #{userId}
+	 AND performanceId = #{performanceId}
+	</select>
+	
+
+	<resultMap type="Mate" id="mateTicket">		
+		<result property="id" column="id"/>
+		<result property="seatGroup" column="seatGroup"/>
+		<result property="seatRate" column="seatRate"/>
+		<result property="category" column="category"/>
+		<result property="groupsize" column="groupsize"/>
+		<result property="groupCnt" column="groupCnt"/>
+		<collection property="mateTags" ofType="com.sample.web.view.MateTag" javaType="list" select="getMateTagByMateId" column="id">
+			<result property="mateId" column="mateId"/>
+			<result property="tagName" column="tagName"/>
+		</collection>
+		<collection property="mateMembers" ofType="User" column="id" javaType="list" select="getMateUserByMateId">
+			<result property="id" column="id"/>
+		</collection>
+	</resultMap>
+
+	<select id="getMateTicket" parameterType="int" resultMap="mateTicket">
+		select a.id, a.performanceId, a.seatGroup, b.category, a.groupsize, a.groupCnt
+		from mate_main a
+		join mate_category b on a.category = b.id
+		where a.id = #{mateId}
+	</select>
+
+
+	<!-- mate_main Insert Table -->
+	<insert id="insertMate" parameterType="Mate" useGeneratedKeys="true"  keyProperty="id">
+		INSERT INTO mate_main
+		(performanceId, seatGroup, groupSize, seatRate)
+		VALUES
+		(#{performance.id}, #{seatGroup}, #{groupsize}, #{seatRate})
+		
+		<selectKey resultType="int" order="AFTER" keyProperty="id">
+		 SELECT LAST_INSERT_ID() as id
+		 </selectKey>
+		
+	</insert>
+
+</mapper>

@@ -1,0 +1,123 @@
+package com.sample.service;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.sample.dto.PerformanceDto;
+import com.sample.dto.PerformanceDetailDto;
+import com.sample.web.view.HallInfo;
+import com.sample.web.view.Performance;
+import com.sample.web.view.PerformanceMain;
+import com.sample.web.view.PerformanceSchedule;
+import com.sample.web.view.PerformanceSeatPrice;
+
+public interface PerformanceService {
+    void addPerformance(Performance performance);
+
+    List<PerformanceDetailDto> getAllPerformances();
+    List<Performance> searchPerformances(Performance performance);    
+    PerformanceDto getPerformanceDetail(int performanceId);        
+    List<PerformanceSchedule> getPerformanceDetailByMap(Map<String, Object> data);
+    List<PerformanceSchedule> getPerformanceDetailByDate(String performanceDate);
+    PerformanceDetailDto getPerformanceByPerformanceMainId(int performanceMainId);
+    
+    /**
+     * 해당 category에 속하는 공연상세정보 리스트 조회한다. 
+     * @param category
+     * @return 해당 category에 속하는 공연상세정보 리스트 
+     */
+    List<PerformanceDetailDto> getPerformancesByCategory(String category);	
+    
+    /**
+     * 검색조건에 해당하는 공연상세정보 리스트 조회한다.
+     * @param map
+     * @return 해당 category에 속하는 
+     */
+    List<PerformanceDetailDto> searchPerformances(Map<String, Object> map);
+    
+    /**
+     * 공연아이디에 해당하는 공연상세정보를 조회한다.
+     * @param performanceId
+     * @return
+     */
+    PerformanceDetailDto getPerformanceDetailById(int performanceId);
+
+    /**
+     * 매개변수로 주어진 카테고리에 해당하는 모든 장르들을 반환한다.
+     * @param category
+     * @return
+     */
+    String[] getGenreByCategory(String category);
+    
+    /**
+     * 검색조건과 페이지정보에 부합하는 공연상세정보가 담긴 맵를 반환한다. (페이징처리됨)
+     * @param map
+     * @return
+     */
+    Map<String, Object> getPerformanceForPaging(Map<String, Object> map);
+    
+    /**
+     * 모든 공연장소에 대한 정보를 조회한다.
+     * @return
+     */
+    List<HallInfo> getAllHallInfos();
+    
+    /**
+     * 공연정보 번호에 해당하는 공연정보를 조회한다.
+     * @param performanceId
+     * @return
+     */
+    HallInfo getHallInfoById(int HallInfoid);
+    
+    /**
+     * 공연정보아이디에 해당하는 PerformanceMain 정보를 조회하여 리스트를 반환한다.
+     * @param performanceInfoId
+     * @return
+     */
+    List<PerformanceMain> getPerformanceMain(int performanceInfoId);
+    
+    /**
+     * 공연정보아이디에 해당하는 공연의 장르들을 조회한다.
+     * @param id
+     * @return
+     */
+    String[] getGenreById(int id);
+    
+    /**
+     * 공연정보아이디에 해당하는 공연정보를 삭제한다.
+     * 공연정보장르, 공연정보과석가격, 공연정보테이블에서 공연정보아이디에 해당하는 행들이 삭제된다. 
+     * @param performaneInfoId
+     */
+    void deletePerformance(int performanceInfoId);
+    
+    /**
+     * 공연정보를 데이터베이스에 저장한다.
+     * 공연정보, 공연장소, 좌석정보에 해당하는 정보들이 저장된다.
+     * @param performance
+     * @param hallInfo
+     * @param insertHallYn
+     * @param seatPrices
+     * @throws Exception
+     */
+    void insertPerformance(Performance performance, HallInfo hallInfo, String insertHallYn
+    		,Map<String, Integer> seatPrices)
+    				throws Exception;
+    /**
+     * 공연정보를 업데이트한다.
+     * 공연정보, 공연장르 테이블이 업데이트 된다.
+     * @param performance
+     */
+    void updatePerformanceInfo(Performance performance);
+    
+    
+    List<PerformanceSeatPrice> getPerformanceSeatPriceById(int performanceId);
+    PerformanceSchedule getPerformanceScheduleByPerformanceId(int performanceMainId);
+
+	List<PerformanceDto> getPerformanceByUserId(String userId);
+    //List<PerformanceDetailDto> searchPerformances(Performance performance);
+    //Performance getPerformanceDetail(int performanceId);
+	
+	List<Performance> getUserLikeList(int offset,String userId);
+}

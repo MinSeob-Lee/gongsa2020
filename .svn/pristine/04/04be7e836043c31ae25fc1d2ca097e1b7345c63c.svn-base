@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sample.dao.HallDao">
+
+
+
+<insert id="insertHallSeats" parameterType="com.sample.dto.JsonHallSeat">
+	INSERT INTO hall_seats
+	(performanceId, hallId, seatBlock, seatRow, seatCol, seatRate, mateGroup)
+	VALUES
+	(#{performanceId}, #{hallId}, #{seatBlock}, #{seatRow}, #{seatCol}, #{seatRate}, #{mateNo})
+</insert>
+
+<select id="getHallInfoByPerformanceInfoId" parameterType="int" resultType="HallInfo">
+	SELECT
+		a.name, a.address, a.gpsX, a.gpsY
+	FROM
+		hall_info_main a
+	JOIN
+		performance_info b 
+	ON
+		a.id = b.hallInfoId
+	WHERE
+		b.id = #{value}
+</select>
+
+</mapper>

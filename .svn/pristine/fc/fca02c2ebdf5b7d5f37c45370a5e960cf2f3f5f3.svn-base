@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sample.dao.PerformanceDao">
+
+	<resultMap type="PerformanceDetailDto" id="PerformanceDetailDtoResultMap">
+		<id column="id" property="id"/>
+		<result column="title" property="title"/>
+		<result column="category" property="category"/>
+		<result column="provider" property="provider"/>
+		<result column="rating" property="rating"/>
+		<result column="runningTime" property="runningTime"/>
+		<result column="startDate" property="startDate"/>
+		<result column="endDate" property="endDate"/>
+		<result column="point" property="point"/>
+		<result column="likes" property="likes"/>
+		<result column="imagePath" property="imagePath"/>
+		<result column="explain" property="explain"/>
+		<result column="hallName" property="hallName"/>
+		<result column="hallAddress" property="hallAddress"/>	
+		<collection property="genres" select="getGenreById" column="id" ofType="string"/>
+	</resultMap>
+
+	<select id="searchPerformance" parameterType="map" resultMap="PerformanceDetailDtoResultMap">
+		SELECT 
+			distinct A.id 		as id, 
+					A.title		as title, 
+					A.category	as category, 
+					A.provider	as provider,  
+					A.rating	as rating, 
+					A.runningTime	as runningTime, 
+					A.startDate		as startDate, 
+					A.endDate		as endDate, 
+					A.point			as point, 
+					A.likes			as likes, 
+					A.imagePath		as imagePath, 
+					A.`explain`		as `explain`, 
+					C.name			as hallName, 
+					C.address		as hallAddress					
+		FROM 
+			performance_info A
+		JOIN 
+			performance_main B ON A.id = B.infoId
+		JOIN 
+			hall_info_main C ON C.id =B.hallId
+		JOIN 
+			performance_genre D ON A.id = D.id	
+		WHERE 
+			A.category=	#{category}
+		<if test="title != null">
+			and A.title like concat('%', #{title}, '%') 
+		</if>
+		<if test="genres != null">
+			and D.genre IN 
+			<foreach collection="genres" index="index" item="genre" open="(" separator="," close=")">
+				#{genre}
+			</foreach>
+		</if>
+		<if test="startDate != null">
+			and A.startDate > #{startDate}
+		</if>
+		<if test="endDate != null">
+			and #{endDate} > A.endDate
+		</if>
+		<if test="age != null">
+			and A.rating = #{age}
+		</if>
+		ORDER BY 
+			A.id	
+
+	</select>
+	
+	
+
+	<select id="selectPerformance" parameterType="int" resultType="PerformanceDto">
+		SELECT distinct
+			A.id,
+			A.title,
+			A.category,
+			A.startDate,
+			A.endDate,
+			A.rating,
+			A.runningTime,
+			A.provider,
+			A.point,
+			A.likes,
+			A.imagePath,
+			A.`explain`,
+			C.id,
+			C.name,
+			C.address
+		from
+			performance_info A
+		join
+			performance_main B
+		on
+			A.id = B.infoId
+		join
+			hall_info_main C
+		on
+			B.hallId = C.id
+		where
+			A.id = #{value};
+	</select>
+			
+	<select id="getGenreById" parameterType="int" resultType="string">
+		SELECT  
+			genre
+		FROM 
+			performance_genre
+		WHERE 
+			id = #{value}
+	</select>
+	
+	<select id="getGenreByCategory" parameterType="string" resultType="string">
+		SELECT 
+			name
+		FROM 
+			genres
+		WHERE category= #{value}	
+	</select>
+	
+	
+	<select id="selectPerformanceByDate" parameterType="Date" resultType="PerformanceSchedule">
+	 	SELECT
+			id,
+			infoId,
+			hallId,
+			showDate,
+			showTime,
+			showNumber
+		FROM
+			performance_main
+		WHERE
+			showDate = #{value};
+	 </select>
+	 
+	 <select id="selectPerformanceByPerformanceMainId" parameterType="int" resultType="PerformanceDto">
+	 	SELECT
+			id as performanceMainId,
+			infoId,
+			hallId,
+			showDate,
+			showTime,
+			showNumber
+		FROM
+			performance_main
+		WHERE
+			id = #{value}
+	 </select>
+
+	
+	
+	<select id="getPerformancesByCategory" parameterType="string" resultMap="PerformanceDetailDtoResultMap">
+		SELECT 
+			distinct A.id 		as id, 
+					A.title		as title, 
+					A.category	as category, 
+					A.provider	as provider,  
+					A.rating	as rating, 
+					A.runningTime	as runningTime, 
+					A.startDate		as startDate, 
+					A.endDate		as endDate, 
+					A.point			as point, 
+					A.likes			as likes, 
+					A.imagePath		as imagePath, 
+					A.`explain`		as `explain`, 
+					C.name			as hallName, 
+					C.address		as hallAddress					
+		FROM 
+			performance_info A
+		JOIN 
+			performance_main B ON A.id = B.infoId
+		JOIN 
+			hall_info_main C ON C.id =B.hallId
+		WHERE 
+			A.category=	#{value}
+		AND 
+			A.endDate >= NOW()
+		ORDER BY 
+			A.id	
+	</select>
+
+	<select id="getPerformanceById" parameterType="int" resultMap="PerformanceDetailDtoResultMap">
+		SELECT 
+			distinct A.id 		as id, 
+					A.title		as title, 
+					A.category	as category, 
+					A.provider	as provider,  
+					A.rating	as rating, 
+					A.runningTime	as runningTime, 
+					A.startDate		as startDate, 
+					A.endDate		as endDate, 
+					A.point			as point, 
+					A.likes			as likes, 
+					A.imagePath		as imagePath, 
+					A.`explain`		as `explain`, 
+					C.name			as hallName, 
+					C.address		as hallAddress					
+		FROM 
+			performance_info A
+		JOIN 
+			performance_main B ON A.id = B.infoId
+		JOIN 
+			hall_info_main C ON C.id =B.hallId
+		WHERE 
+			A.id=	#{value}
+		ORDER BY 
+			A.id	
+	</select>
+	
+
+
+<!--  
+	<select id="selectPerformance" parameterType="int" resultType="Performance">
+		select
+			id,
+			title,
+			category,
+			startDate,
+			endDate,
+			rating,
+			runningTime,
+			provider,
+			point,
+			likes,
+			imagePath,
+			`explain`
+		from
+			performance_info A
+		join
+			performance_main B
+		on
+			A.id = B.infoId
+		join
+			hall_info_main C
+		on
+			B.hallId = C.id
+		where
+			A.id = #{value}
+	</select>
+	
+	 
+-->	
+</mapper>

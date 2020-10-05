@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sample.dao.HallDao">
+
+
+
+<insert id="insertHallSeats" parameterType="com.sample.dto.JsonHallSeat">
+	INSERT INTO hall_seats
+	(performanceId, hallId, seatBlock, seatRow, seatCol, seatRate, mateGroup)
+	VALUES
+	(#{performanceId}, #{hallId}, #{seatBlock}, #{seatRow}, #{seatCol}, #{seatRate}, #{mateNo})
+</insert>
+
+<select id="getHallInfoByPerformanceInfoId" parameterType="int" resultType="HallInfo">
+	SELECT
+		a.name, a.address, a.gpsX, a.gpsY
+	FROM
+		hall_info_main a
+	JOIN
+		performance_info b 
+	ON
+		a.id = b.hallInfoId
+	WHERE
+		b.id = #{value}
+</select>
+
+<select id="getHallSeats" parameterType="int" resultType="com.sample.dto.JsonHallSeat">
+	SELECT 
+		a.performanceId,
+		a.hallId,
+		b.groupSize,
+		a.seatBlock,
+		a.seatRow,
+		a.seatCol,
+		b.seatRate,
+		a.mateGroup 	as mateNo,
+		b.category 		as categoryId,
+		a.seatStatus
+	FROM hall_seats a
+	JOIN mate_main b ON a.mateGroup = b.id
+	WHERE a.performanceId = #{value}
+</select>
+
+<update id="updateHallSeatStatusByMateId" parameterType="com.sample.dto.HallSeatDto">
+	UPDATE 
+		hall_seats
+	SET
+		seatStatus = #{seatStatus}
+	WHERE mateGroup = #{mateGroup}
+</update>
+<update id="updateHallSeatOne" parameterType="com.sample.dto.HallSeatDto">
+	UPDATE
+		hall_seats
+	SET 
+		hallId = #{hallId},
+		seatRate = #{seatRate},
+		seatStatus = #{seatStatus},
+		mateGroup = #{mateGroup}
+	where
+		seatRow = #{seatRow}
+	and	
+		seatCol = #{seatCol}
+	and
+		seatBlock = #{seatBlock}
+	AND 
+		performanceId = #{performanceId}
+
+</update>
+
+<delete id="deleteAllHallSeatsByPerformanceId" parameterType="int">
+	DELETE FROM hall_seats WHERE performanceId = #{value}
+
+</delete>
+
+<select id="getSeatsByMateId" parameterType="int" resultType="com.sample.dto.HallSeatDto">
+	SELECT 
+		a.performanceId, 
+		a.hallId, 
+		a.seatBlock, 
+		a.seatRow, 
+		a.seatCol, 
+		a.seatRate, 
+		a.seatStatus, 
+		a.mateGroup 
+	FROM hall_seats a 
+	WHERE mateGroup = #{value}
+
+</select>
+
+
+</mapper>

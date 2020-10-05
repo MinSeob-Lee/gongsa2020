@@ -1,0 +1,38 @@
+package com.sample.service;
+
+import java.util.List;
+import java.util.Map;
+
+import com.sample.dto.NoticeDetailDto;
+import com.sample.dto.NoticeInsideContentDto;
+import com.sample.web.form.NoticeForm;
+import com.sample.web.view.Notice;
+
+
+public interface NoticeService {
+	
+	void addNewImage(Map<String, String> map);
+	
+	List<String> displayAllNoticeImages();
+	
+	void addNewNotice(Notice notice, List<NoticeInsideContentDto> noticeListDto);
+	
+	NoticeDetailDto displayNoticeDetail(int noticeId);
+	
+	List<Notice> displayAllNotice();
+	
+	// 페이징처리의 조건을 만족한 목록들을 반환한다.
+	Map<String, Object> getNoticeForPaging(int pageNo, int rows, String status, String keyword);
+	
+	void increaseViewCount(int noticeId);
+	
+	Notice BasedOnCurrentNoticeIdNextNoticeInfo(int currentNoticeId);
+	
+	Notice BasedOnCurrentNoticeIdPreNoticeInfo(int currentNoticeId);
+
+	void deleteNoticeById(int noticeId);
+
+	void updateNotice(NoticeForm noticeForm);
+	
+	
+}

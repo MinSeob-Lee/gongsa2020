@@ -1,0 +1,37 @@
+package com.sample.web.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.sample.service.UserService;
+import com.sample.web.view.User;
+
+@Controller
+@RequestMapping("/mypage")
+public class MyPageController {
+	
+	@Autowired
+	UserService userService;
+	
+	@RequestMapping("/mypagemain.do")
+	public String main(Model model) {
+		User user = new User();
+		user.setId("test001");
+		user = userService.getUserDetail(user.getId());
+		model.addAttribute("user", user);
+		
+		System.out.println(user.getId());
+		System.out.println(user.getNickname());
+		return "mypage/mypagemain";
+	}
+	@RequestMapping("/myperformance.do")
+	public String myPerformance() {
+		return "mypage/myperformance";
+	}
+	@RequestMapping("/myperformanceDetail.do")
+	public String myPerformanceDetail() {
+		return "mypage/myperformanceDetail";
+	}
+}

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sample.dao.UserDao">
+
+	<resultMap type="User" id="getUserResult">
+		<result property="id"  column="id"/>
+		<result property="password" column="password"/>
+		<result property="nickname" column="nickname"/>
+		<result property="birthday" column="birthday"/>
+		<result property="gender" column="gender"/>
+		<result property="email" column="email"/>
+		<result property="tel" column="tel"/>
+		<result property="admin" column="admin" javaType="java.lang.Boolean" jdbcType="CHAR" typeHandler="com.sample.utils.BooleanChecker"/>
+		<result property="regDate" column="regDate"/>
+		<result property="deleted" column="deleted" javaType="java.lang.Boolean" jdbcType="CHAR" typeHandler="com.sample.utils.BooleanChecker"/>
+		<result property="point" column="point"/>
+		<result property="getLike" column="getLike"/>
+		<result property="getNotify" column="getNotify"/>
+		<result property="iconPath" column="iconPath"/>
+		<result property="grade" column="grade"/>
+		<result property="totalPoint" column="totalPoint"/>
+		<result property="shutout" column="shutout" javaType="java.lang.Boolean" jdbcType="CHAR" typeHandler="com.sample.utils.BooleanChecker"/>
+		<result property="postalCode" column="postalCode"/>
+		<result property="sido" column="sido"/>
+		<result property="gungu" column="gungu"/>
+		<result property="addr" column="addr"/>
+		<collection column="id" property="coupons" select="getCouponsByUserId" ofType="Coupon" javaType="List" >
+			<result property="id" column="id"/>
+			<result property="name" column="name"/>
+			<result property="type" column="type"/>
+			<result property="value" column="value"/>
+			<result property="getDate" column="getDate"/>
+			<result property="used" column="used" javaType="java.lang.Boolean" jdbcType="CHAR" typeHandler="com.sample.utils.BooleanChecker"/>
+		</collection>
+		<collection column="id" property="badges" select="getBadgesByUserId" ofType="UserBadge" javaType="List">
+            <result property="id" column="id"/>
+            <result property="opened" column="opened" javaType="java.lang.Boolean" jdbcType="CHAR" typeHandler="com.sample.utils.BooleanChecker"/>
+            <result property="name" column="name"/>
+            <result property="comment" column="comment"/>
+            <result property="iconPath" column="iconPath"/>
+		</collection>
+	</resultMap>
+
+	<select id="getUserById" parameterType="string" resultMap="getUserResult">
+		SELECT A.id as id, A.password, A.nickname, 
+			   A.birthday, A.gender, A.email, A.tel, 
+			   A.admin, B.regDate, B.deleted, B.point, 
+			   B.getLike, B.getNotify, B.iconId, B.grade, 
+			   B.totalPoint, B.shutout, C.postalCode, C.sido, 
+			   C.sigungu, C.addr 
+		FROM user_main A
+		JOIN user_sub B ON A.id = B.id
+		left outer JOIN user_address C ON A.id = C.id
+		WHERE A.id = #{id}
+	</select>
+	
+	<select id="getUserByEmail" parameterType="string" resultMap="getUserResult">
+		SELECT A.id as id, A.password, A.nickname, 
+			   A.birthday, A.gender, A.email, A.tel, 
+			   A.admin, B.regDate, B.deleted, B.point, 
+			   B.getLike, B.getNotify, B.iconId, B.grade, 
+			   B.totalPoint, B.shutout, C.postalCode, C.sido, 
+			   C.sigungu, C.addr 
+		FROM user_main A
+		JOIN user_sub B ON A.id = B.id
+		left outer JOIN user_address C ON A.id = C.id
+		WHERE A.email = #{email}
+	</select>
+	
+	<select id="getCouponsByUserId" parameterType="string" resultType="Coupon">
+		select b.id as id, name, type, 
+			   value, getDate, used 
+		from user_coupon a 
+		join coupon b on b.id = a.couponId 
+		where a.id = #{id}
+	</select>
+	
+	<select id="getBadgesByUserId" parameterType="string" resultType="UserBadge">
+		select b.id as id, opened, name, comment, iconPath 
+		from user_badge a
+		join badge b on a.`badgeId` = b.`id`
+		where a.id=#{id}
+    </select>
+		
+	<insert id="insertUser" parameterType="User">
+		insert into user_main
+		(id, password, nickname, birthday, gender, email, tel)
+		values
+		(#{id}, #{password}, #{nickname}, #{birthday}, #{gender}, #{email}, #{tel})
+	</insert>
+	
+	<insert id="insertUserSub" parameterType="User">
+		insert into user_sub
+		(id)
+		values
+		(#{id})
+	</insert>
+	
+	<insert id="insertUserAddr" parameterType="User">
+		insert into user_address
+		(id, postalCode, sido, sigungu, addr)
+		values
+		(#{id},#{postalCode}, #{sido}, #{sigungu}, #{addr})
+	</insert>
+
+	<update id="updateUser" parameterType="User">
+		UPDATE user_sub
+			SET point = #{point}
+		WHERE id = #{id}
+	</update>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

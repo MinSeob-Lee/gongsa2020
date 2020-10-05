@@ -1,0 +1,905 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>같이 보자! 공공연한사이</title>
+<link rel="stylesheet" href="/resources/css/jquery.fullPage.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.js"></script>
+<script type="text/javascript" src="/resources/js/jquery.color.js"></script>
+<script type="text/javascript" src="/resources/js/custom.js"></script>
+<script type="text/javascript" src="/resources/js/credit.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<style>
+	div#R-seats1 button {
+		background-color: #00FFFF;
+		width: 30px;
+		height: 35px;
+	}
+	
+	div#R-seats2 button {
+		background-color: #00FFFF;
+		width: 30px;
+		height: 35px;
+	}
+	
+	div#S-seats1 button {
+		background-color: #F3F781;
+		width: 30px;
+		height: 35px;
+	}
+	
+	div#S-seats2 button {
+		background-color: #F3F781;
+		width: 30px;
+		height: 35px;
+	}
+	
+	div#S-seats3 button {
+		background-color: #F3F781;
+		width: 30px;
+		height: 35px;
+	}
+	
+	div#S-seats4 button {
+		background-color: #F3F781;
+		width: 30px;
+		height: 35px;
+	}
+	
+	div#A-seats1 button {
+		background-color: #81F781;
+		width: 30px;
+		height: 35px;
+	}
+	div#A-seats2 button {
+		background-color: #81F781;
+		width: 30px;
+		height: 35px;
+	}
+	div#A-seats3 button {
+		background-color: #81F781;
+		width: 30px;
+		height: 35px;
+	}
+	div#A-seats4 button {
+		background-color: #81F781;
+		width: 30px;
+		height: 35px;
+	}
+</style>
+<body>
+	<div class="header">
+		<%@ include file="../common/navi.jsp"%>
+	</div>
+	<div class="body" style="margin-top: 100px;">
+		<div class="container-fluid" style="margin-bottom: -100px;">
+			<div class="row">
+				<div class="col-12">
+					<div class="row">
+						<div class="col-9">
+							<div class="row">
+								<div class="col-12">
+									<div class="row">
+										<div class="col-4" id="step1" style="background-color: #FF0000; color: white;">
+											<div>step1</div>
+											<span>관람일/회차</span>
+										</div>
+										<div class="col-2" id="step2">
+											<div>step2</div>
+											<span>결제등급선택</span>
+										</div>
+										<div class="col-2" id="step3">
+											<div>step3</div>
+											<span>할인/쿠폰</span>
+										</div>
+										<div class="col-2" id="step4">
+											<div>step4</div>
+											<span>수령방법</span>
+										</div>
+										<div class="col-2" id="step5">
+											<div>step5</div>
+											<span>결제방법</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-12">
+									<div id="fullpage">
+										<div class="section fp-auto-height" data-anchor="section1" >
+											<div style="height: 890px;">
+												<div class="slide" data-anchor="slide1" id="slide1">
+													<div class="row" >
+														<div class="col-6 text-center">
+															<div class="card">
+																<div class="card-body">
+																	<span>관람일 선택</span>
+																</div>
+															</div>
+															<div class="row">
+																<div class="offset-4 col-5 offset-3">
+																	<input type="text" class="selector" placeholder="날짜선택" id="pickdate" />
+																	<a class="input-button" title="toggle" data-toggle><i class="icon-calendar" id="calendar"></i></a>
+																</div>
+															</div>
+															
+														</div>
+														<div class="col-6 text-center">
+															<div class="card">
+																<div class="card-body">
+																	<span>회차 선택</span>
+																</div>
+															</div>
+															<div class="text-left">
+																<span><strong>선택날짜 : </strong></span>
+																<span id="performanceDate"></span>
+															</div>
+															<div class="row text-left" style="height: 70%">
+																<div class="col-6">
+																	<div class="card">
+																		<div class="card-header">
+																			<div>회차 선택</div>
+																		</div>
+																		<div class="card-body">
+																			<div>
+																				<table class="table">
+																					<tbody id="performanceShow">																					
+																					</tbody>
+																				</table>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																<div class="col-6">
+																	<div class="card">
+																		<div class="card-header">
+																			<div>좌석등급/잔여석</div>
+																		</div>
+																		<div class="card-body" id="seatRate"></div>
+																	</div>
+																</div>
+															</div>	
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-12">
+															<table class="table-bordered" style="width: 100%;">
+															<colgroup>
+																<col width="10%" />
+																<col width="90%" />
+															</colgroup>
+																<tbody>
+																	<tr>
+																		<th class="text-center">유</th>
+																		<td>이것은 유의사항입니다.이것은 유의사항입니다.이것은 유의사항입니다.이것은 유의사항입니다.</td>
+																	</tr>
+																	<tr>
+																		<th class="text-center">의</th>
+																		<td>이것은 유의사항입니다.이것은 유의사항입니다.이것은 유의사항입니다.이것은 유의사항입니다.이것은 유의사항입니다.</td>
+																	</tr>
+																	<tr>
+																		<th class="text-center">사</th>
+																		<td>이것은 유의사항입니다.이것은 유의사항입니다.이것은 유의사항입니다.</td>
+																	</tr>
+																	<tr>
+																		<th class="text-center">항</th>
+																		<td>이것은 유의사항입니다.이것은 유의사항입니다.이것은 유의사항입니다.이것은 유의사항입니다.</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>
+											<div class="slide" data-anchor="slide2" id="slide2">
+												<div class="row">
+													<div class="col-12">
+														<div class="card">
+															<div class="card-body text-center">
+																<span>좌석 현황</span>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-12">
+																<div class="card">
+																	<div class="card-header text-center">
+																		<span style="font-size:50px;"><strong>STAGE</strong></span>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="offset-3 col-6 offset-3">
+																<div class="row">
+																	<div id="R-seats1" class="col-6"></div>
+																	<div id="R-seats2" class="col-6"></div>
+																</div>
+															</div>
+														</div>
+														<br />
+														<div class="row">
+															<div class="col-12">
+																<div class="row">
+																	<div id="S-seats1" class="col-3"></div>
+																	<div id="S-seats2" class="col-3"></div>
+																	<div id="S-seats3" class="col-3"></div>
+																	<div id="S-seats4" class="col-3"></div>
+																</div>
+															</div>
+														</div>
+														<br />
+														<div class="row">
+															<div class="col-12">
+																<div class="row">
+																	<div id="A-seats1" class="col-3"></div>
+																	<div id="A-seats2" class="col-3"></div>
+																	<div id="A-seats3" class="col-3"></div>
+																	<div id="A-seats4" class="col-3"></div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="slide" data-anchor="slide3" id="slide3">
+												<div class="row">
+													<div class="col-12">
+														<div class="card">
+															<div class="card-body">
+																쿠폰 선택
+															</div>
+														</div>
+														<table class="table-bordered text-center" style="width:100%; height: 100%">
+															<colgroup>
+																<col width="30%" />
+																<col width="30%" />
+																<col width="30%" />
+															</colgroup>
+															<thead>
+																<tr>
+																	<th>쿠폰명</th>
+																	<th>할인금액</th>
+																	<th>사용</th>
+																</tr>
+															</thead>
+															<tbody>
+																<c:forEach items="${LOGIN_USER.coupons }" var="coupon">
+																	<tr>
+																		<td>${coupon.name }</td>
+																		<td><fmt:formatNumber value="${coupon.value }" type="number" maxFractionDigits="3" /> 원</td>
+																		<td><input type="radio" id="coupon-check" style="width:20px; height:20px;" value="${coupon.value }" name="coupon-check" /></td>
+																	</tr>
+																</c:forEach>
+															</tbody>
+														</table>
+														<div class="card">
+															<div class="card-body">
+																포인트 사용
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-3">
+																<div class="card">
+																	<div class="card-body">
+																		<span><strong>포인트</strong></span>																	
+																	</div>
+																</div>
+															</div>
+															<div class="col-3">
+																<div class="card">
+																	<div class="card-body">
+																		<span>소유 총 포인트</span>
+																		<span><fmt:formatNumber value="${LOGIN_USER.point }" type="number" maxFractionDigits="3"/> 원</span>
+																	</div>
+																</div>
+															</div>
+															<div class="col-3">
+																<div class="row">
+																	<div class="col-1">
+																		<input type="checkbox" style="width:30px; height:30px;" />
+																	</div>
+																	<div class="col-11">
+																		<div class="card">
+																			<div class="card-body">
+																				<span>전액사용 (총 0 원)</span>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<div class="col-3">
+																<input type="text" placeholder="직접입력"/>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="slide" data-anchor="slide4" id="slide4">
+												<div class="row">
+													<div class="col-12">
+														<div class="card">
+															<div class="card-body">
+																수령방법
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-2">
+																<div class="card">
+																	<div class="card-body">
+																		<span>수령방법 선택</span>																	
+																	</div>
+																</div>
+															</div>
+															<div class="col-10">
+																<div class="card">
+																	<div class="card-body">
+																		<input type="radio" style="width:15px; height:15px;" checked="checked" disabled /> 현장수령
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="row">
+																<div class="col-4">
+																	<table class="table">
+																		<tbody>
+																			<tr>
+																				<th><input type="radio" name="receiveType" /> SMS</th>
+																				<td><input type="radio" name="receiveType" /> 카카오톡</td>
+																				<td><input type="radio" name="receiveType" /> 이메일</td>
+																			</tr>
+																		</tbody>
+																	</table>
+																</div>
+															</div>
+														<div class="row">
+															<div class="col-12">
+																<div class="card">
+																	<div class="card-body">
+																		* 주의 사항 * 부정확한 정보 입력으로 인한 문제 발생 시 예스24는 책임을 지지 않습니다. <br />
+																		1) 배송 선택 시 티켓 수령자의 배송지 정보를 정확히 입력해주시기 바랍니다. <br />
+																		2) 티켓은 유가증권으로 본인에게 직접 전달해야하며, 분실된 티켓은 재발권 되지 않습니다. <br />
+																		3) 일괄배송의 경우 정해진 날짜에 티켓 배송이 시작되며, 주소 수정은 일괄배송일 2일 전까지 가능합니다. <br />
+																		4) 예매 티켓 배송은 예매완료일, 혹은 일괄배송일로부터 4~5일(영업일 기준) 이내 수령 가능합니다. <br />
+																		5) 긴급연락처는 공연 취소와 같은 유사 시 안내 받으실 연락처이므로 정확히 입력해주시기 바랍니다. <br />
+																		6) 이메일 정보 미 입력 시 예매 관련 안내 메일을 받을 수 없으니 이메일 받기를 원하시는 경우 마이페이지에서
+																		   회원정보를 수정해주시기 바랍니다.
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="slide" data-anchor="slide5" id="slide5">
+												<div class="row">
+													<div class="col-12">
+														<div class="card">
+															<div class="card-body">
+																결제 방법
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-2">
+																<span>결제방법 선택</span>
+															</div>
+															<div class="col-10">
+																<input type="radio" name="payMethod" value="card" id="creditcard" checked="checked"/> 신용카드
+																<input type="radio" name="payMethod" value="check" id="check"/> 무통장입금
+																<select name="" id="payradio" disabled>
+																	<option value="">-- 선택하세요 --</option>
+																	<option value="국민은행">국민은행</option>
+																	<option value="신한은행">신한은행</option>
+																	<option value="농협은행">농협은행</option>
+																	<option value="우리은행">우리은행</option>
+																</select>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-12" style="width:100%;">
+																<span style="color:red;">취소 가능 마감 시간 : 2020년 08월 20일 17시까지</span>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-12">
+																<table class="table table-borderd" style="width:100%;">
+																	<colgroup>
+																		<col width="20%" />
+																		<col width="20%" />
+																		<col width="60%" />
+																	</colgroup>
+																	<thead>
+																		<tr>
+																			<th>내용</th>
+																			<th>취소수수료</th>
+																			<th>비고</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		<tr>
+																			<td>예매 후 7일 이내</td>
+																			<td>없음</td>
+																			<td rowspan="5">
+																				<p>
+																					- 취소 시 예매수수료는 예매 당일 밤 12시 이전까지만 환불됩니다. <br />
+																					- 취소 시 예매수수료는 예매 당일 밤 12시 이전까지만 환불됩니다. <br />
+																					- 취소 시 예매수수료는 예매 당일 밤 12시 이전까지만 환불됩니다. <br />
+																					- 취소 시 예매수수료는 예매 당일 밤 12시 이전까지만 환불됩니다. <br />
+																					- 취소 시 예매수수료는 예매 당일 밤 12시 이전까지만 환불됩니다.
+																				</p>
+																			</td>
+																		</tr>
+																		<tr>
+																			<td>예매 후 8일 ~ 관람일 10일 전까지</td>
+																			<td>
+																				<p>뮤지컬, 콘서트, 클래식 등: 장당 4,000원/</p>
+																			</td>
+																		</tr>
+																		<tr>
+																			<td>예매 후 7일 이내</td>
+																			<td>없음</td>
+																		</tr>
+																		<tr>
+																			<td>예매 후 7일 이내</td>
+																			<td>없음</td>
+																		</tr>
+																		<tr>
+																			<td>예매 후 7일 이내</td>
+																			<td>없음</td>
+																		</tr>
+																	</tbody>
+																</table>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-6 text-right">
+																<input type="checkbox" /> 취소수수료 및 취소기한을 확인하였습니다.
+															</div>
+															<div class="col-6">
+																<input type="checkbox" /> 제 3자 정보제공 내용에 동의합니다. <a href="">[상세보기]</a>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-3" style="height: 890px;">
+							<div class="row">
+								<div class="col-12">
+									<table class="table-bordered" style="margin-bottom: 10px;">
+										<tbody>
+											<tr>
+												<th rowspan="3"><img alt="sample-image"
+												src="${performanceDto.imagePath }"
+												style="width: 150px; height: 200px;"></th>
+												<td>[${performanceDto.category}] ${performanceDto.title}</td>
+											</tr>
+											<tr>
+												<td><fmt:formatDate value="${performanceDto.startDate }" pattern="yyyy-MM-dd"/> ~ <br /><fmt:formatDate value="${performanceDto.endDate }" pattern="yyyy-MM-dd"/></td>
+											</tr>
+											<tr>
+												<td>${performanceDto.hallinfo.getName() }</td>
+											</tr>
+										</tbody>
+									</table>
+									<table class="table-bordered" style="width:270px; height: 200px;">
+										<colgroup>
+											<col width="40%" />
+											<col width="60%" />
+										</colgroup>
+										<tbody>
+											<tr>
+												<th class="text-center">날짜</th>
+												<td id="showDate"></td>
+											</tr>
+											<tr>
+												<th class="text-center">시간</th>
+												<td id="showTime"></td>
+											</tr>
+											<tr>
+												<th class="text-center">매수</th>
+												<td>1매</td>
+											</tr>
+											<tr>
+												<th class="text-center">좌석</th>
+												<td>미정</td>
+											</tr>
+										</tbody>
+									</table>
+									<table class="table-bordered" style="width:270px; height: 300px; margin-top: 10px;">
+										<colgroup>
+											<col width="40%" />
+											<col width="60%" />
+										</colgroup>
+										<tbody id="paystatus">
+											<tr>
+												<th>결제내역</th>
+												<td class="text-right">0 원</td>
+											</tr>
+											<tr>
+												<th>티켓금액</th>
+												<td class="text-right">0 원</td>
+											</tr>
+											<tr>
+												<th>예매수수료</th>
+												<td class="text-right">1,000 원</td>
+											</tr>
+											<tr>
+												<th>총 금액(+)</th>
+												<td class="text-right">0 원</td>
+											</tr>
+											<tr>
+												<th>할인쿠폰</th>
+												<td class="text-right">
+													<span id="coupon"></span>
+												</td>
+											</tr>
+											<tr>
+												<th>포인트머니</th>
+												<td class="text-right" id="point">0 원</td>
+											</tr>
+											<tr>
+												<th>총할인금액(-)</th>
+												<td class="text-right" id="total-discount"></td>
+											</tr>
+										</tbody>							
+									</table>
+									<br />
+									<table style="width:270px;">
+										<tbody>
+											<tr>
+												<th>최종결제금액</th>
+												<td id="total-bill"> 원</td>
+											</tr>
+										</tbody>
+									</table>
+									<div id="all-btns">
+										<button id="prevslide" class="btn btn-secondary" style="width:125px;" disabled>이전</button>
+										<button id="nextslide" class="btn btn-primary" style="width:125px;">다음</button>									
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.8.9/jquery.fullPage.min.js"></script>
+<script type="text/javascript">
+		$(document).ready(
+				function() {					
+					$('#fullpage').fullpage(
+							{
+								//options here
+								slidesNavigation : false,
+								autoScrolling : false,
+								navigation : false,
+								controlArrows : false,
+								keyboardScrolling : true,
+								loopHorizontal : false,
+								navigationPosition : 'right',
+								sectionsColor : [ '#ffffff', '#ffffff',
+										'#ffffff', '#ffffff', '#ffffff' ],
+								afterSlideLoad: function(section, origin, destination, direction) {
+											
+											var tbodyN = '<tr>';
+												tbodyN += '<th>결제내역</th>'
+												tbodyN +='<td class="text-right">0 원</td>'
+												tbodyN +='	</tr>'
+												tbodyN += '<tr>'
+												tbodyN += '<th>티켓금액</th>'
+												tbodyN +='<td class="text-right">0 원</td>'
+												tbodyN +='	</tr>'
+												tbodyN += '<tr>'
+												tbodyN += '<th>예매수수료</th>'
+												tbodyN +='<td class="text-right">1,000 원</td>'
+												tbodyN +='	</tr>'
+												tbodyN += '<tr>'
+												tbodyN += '<th>총 금액(+)</th>'
+												tbodyN +='<td class="text-right">0 원</td>'
+												tbodyN +='	</tr>'
+												tbodyN += '<tr>'
+												tbodyN += '<th>할인쿠폰</th>'
+												tbodyN +='<td class="text-right" id="coupon"></td>'
+												tbodyN +='	</tr>'
+												tbodyN += '<tr>'
+												tbodyN += '<th>포인트머니</th>'
+												tbodyN +='<td class="text-right">0 원</td>'
+												tbodyN +='	</tr>'
+												tbodyN += '<tr>'
+												tbodyN += '<th>총 할인금액(-)</th>'
+												tbodyN +='<td class="text-right"></td>'
+												tbodyN +='	</tr>';
+											
+											var seatGradeInfo = '<tr>';
+												seatGradeInfo += '<th class="text-center" style="background-color: #00FFFF;">R석</th>'
+												seatGradeInfo += '<td></td>'
+												seatGradeInfo += '</tr>'
+												seatGradeInfo += '<tr>'
+												seatGradeInfo += '<th class="text-center" style="background-color: #F3F781;">S석</th>'
+												seatGradeInfo += '<td></td>'
+												seatGradeInfo += '</tr>'
+												seatGradeInfo += '<tr>'
+												seatGradeInfo += '<th class="text-center" style="background-color: #81F781;">A석</th>'
+												seatGradeInfo += '<td></td>'
+												seatGradeInfo += '</tr>';
+											
+											var performInfo = '<tr>';
+												performInfo += '<th class="text-center">날짜</th>'
+												performInfo += '<td></td>'
+												performInfo += '</tr>'
+												performInfo += '<tr>'
+												performInfo += '<th class="text-center">시간</th>'
+												performInfo += '<td></td>'
+												performInfo += '</tr>'
+												performInfo += '<tr>'
+												performInfo += '<th class="text-center">매수</th>'
+												performInfo += '<td>1매</td>'
+												performInfo += '</tr>'
+												performInfo += '<tr>'
+												performInfo += '<th class="text-center">좌석</th>'
+												performInfo += '<td>미정</td>'
+												performInfo += '</tr>';
+											
+											var seatGradeSelect = '<tr>';
+												seatGradeSelect += '<th class="text-center" style="background-color: #00FFFF;">R석</th>'
+												seatGradeSelect += '<td class="text-center"><input type="radio" name="seatGrade" value="R" style="width:25px; height:25px; border:10px;" /></td>'
+												seatGradeSelect += '</tr>'
+												seatGradeSelect += '<tr>'
+												seatGradeSelect += '<th class="text-center" style="background-color: #F3F781;">S석</th>'
+												seatGradeSelect += '<td class="text-center"><input type="radio" name="seatGrade" value="S" style="width:25px; height:25px; border:10px;" /></td>'
+												seatGradeSelect += '</tr>'
+												seatGradeSelect += '<tr>'
+												seatGradeSelect += '<th class="text-center" style="background-color: #81F781;">A석</th>'
+												seatGradeSelect += '<td class="text-center"><input type="radio" name="seatGrade" value="A" style="width:25px; height:25px; border:10px;" /></td>'
+												seatGradeSelect += '</tr>';
+									
+
+											if (destination == 'slide1') {
+												$('#paystatus').empty();
+												$('#paystatus').append(tbodyN);
+												$('#performanceinfo').empty();
+												$('#performanceinfo').append(performInfo);
+												$('#prevslide').prop('disabled', true);
+												$('#step2').animate({backgroundColor : 'white'});
+												$('#step2').animate({color : 'black'});
+												$('#step1').css('background-color','#FF0000');
+												$('#step1').css('color','white');
+												$('#step1').prop('class', 'col-4');
+												$('#step2').prop('class', 'col-2');
+											}
+												
+											if (destination == 'slide2') {
+												$('#performanceinfo').empty();
+												$('#performanceinfo').append(seatGradeInfo);
+												$('#paystatus').empty();
+												$('#paystatus').append(seatGradeSelect);
+												$('#prevslide').prop('disabled', false);
+												$('#step1').animate({backgroundColor : 'white'});
+												$('#step1').animate({color : 'black'});
+												$('#step2').animate({backgroundColor : '#FF0000'}, 500);
+												$('#step2').animate({color : 'white'}, 500);
+												$('#step3').animate({backgroundColor : 'white'});
+												$('#step3').animate({color : 'black'});
+												$('#step1').prop('class', 'col-2');
+												$('#step2').prop('class', 'col-4');
+												$('#step3').prop('class', 'col-2');
+											}
+											
+											if (destination == 'slide3') {
+												$('#paystatus').empty();
+												$('#paystatus').append(tbodyN);
+												$('#performanceinfo').empty();
+												$('#performanceinfo').append(performInfo);
+												$('#step2').animate({backgroundColor : 'white'});
+												$('#step2').animate({color : 'black'});
+												$('#step3').animate({backgroundColor : '#FF0000'}, 500);
+												$('#step3').animate({color : 'white'}, 500);
+												$('#step4').animate({backgroundColor : 'white'});
+												$('#step4').animate({color : 'black'});
+												$('#step2').prop('class', 'col-2');
+												$('#step3').prop('class', 'col-4');
+												$('#step4').prop('class', 'col-2');
+											}
+											
+											if (destination == 'slide4') {
+												$('#step3').animate({backgroundColor : 'white'});
+												$('#step3').animate({color : 'black'});
+												$('#step4').animate({backgroundColor : '#FF0000'}, 500);
+												$('#step4').animate({color : 'white'}, 500);
+												$('#step5').animate({backgroundColor : 'white'});
+												$('#step5').animate({color : 'black'});
+												$('#step3').prop('class', 'col-2');
+												$('#step4').prop('class', 'col-4');
+												$('#step5').prop('class', 'col-2');
+												$('#charge').attr('id', 'nextslide').text('다음').removeClass('btn-info').addClass('btn-primary');
+											}
+											
+											if (destination == 'slide5') {
+												$('#step4').animate({backgroundColor : 'white'});
+												$('#step4').animate({color : 'black'});
+												$('#step5').animate({backgroundColor : '#FF0000'}, 500);
+												$('#step5').animate({color : 'white'}, 500);
+												$('#step4').prop('class', 'col-2');
+												$('#step5').prop('class', 'col-4');
+												$('#nextslide').attr('id', 'charge').text('결제').removeClass('btn-primary').addClass('btn-info');
+												
+											$('#all-btns').on('click','#charge',function() {
+												location.href='/mate/matelist.do';
+											})
+											
+											}
+											
+											$('input[name=payMethod]').click(function(){												
+												if($('#check').is(':checked')){
+												    $('#payradio').prop('disabled', false);
+												} else {
+													$('#payradio').prop('disabled', true);
+												}
+											});
+								}																
+							});	
+					
+					$('#nextslide').click(function() {
+						$.fn.fullpage.moveSlideRight();	
+					});
+					
+					$('#prevslide').click(function() {
+						$.fn.fullpage.moveSlideLeft();
+					});
+					
+					// $(".selector").flatpickr(optional_config);
+				});
+		
+		$(".selector").flatpickr({ 
+			dateFormat: "Y-m-d",
+			minDate: '<fmt:formatDate value="${performanceDto.startDate}" pattern="yyyy-MM-dd" />',
+			maxDate: '<fmt:formatDate value="${performanceDto.endDate}" pattern="yyyy-MM-dd" />',
+			inline: true,
+			onChange: function(selectedDate, selectedDateString, instance) {
+				$.ajax({
+					type:"GET",
+					url:"performanceSchedule.do",
+					data: {no:'${performanceDto.performanceId}', date:selectedDateString},
+					dataType:"json",
+					success:function(performanceSchedules) {
+						var performanceShow = $('#performanceShow')
+						performanceShow.empty();
+						var performanceDate = $('#performanceDate')
+						
+						for (var i=0; i<performanceSchedules.length; i++) {
+							//$('.performanceShow').
+								var rows = '<tr>'
+								rows += '<td > <a href="#" data-no="'+performanceSchedules[i].id+'">['+performanceSchedules[i].showNumber+']회</a></td>'
+								rows += '<td>'+performanceSchedules[i].showTime+'</td>'
+								rows += '</tr>'
+								
+								performanceShow.append(rows);
+								performanceDate.text(performanceSchedules[i].showDate);
+								
+						}
+					}
+				})	
+			}
+		});
+		
+		
+		$("#performanceShow").on('click', 'a', function(event) {
+			event.preventDefault();
+			var performanceMainId = $(this).data("no");
+			var performanceDate = $('#performanceDate').text();
+			console.log(performanceMainId)
+			$.ajax({
+				type:"GET",
+				url:"performanceMain.do",
+				data:{no:performanceMainId},
+				dataType:"json",
+				success:function(performanceDto) {
+					var showDate = $('#showDate');
+					var showTime = $('#showTime');
+					var seatRate = $('#seatRate');
+					showDate.empty();
+					showTime.empty();
+					seatRate.empty();
+					var schedule = performanceDto.schedule[0]
+					var seats = performanceDto.seatPrice
+					showDate.append(schedule.showDate);
+					showTime.append("["+schedule.showNumber+"]"+"회"+" "+schedule.showTime);
+					var rows = new Array()
+					for (var i=0; i<seats.length; i++) {
+						var row = '<div>'
+							row += '<span>'+seats[i].seatRate+"석"+'</span>'
+							row += '<span>'+seats[i].price+"원"+"(잔여: 96 석)"+'</span>'
+							row += '</div>';
+						rows[i] = row
+					}
+					
+					seatRate.append(rows[1]);
+                    seatRate.append(rows[2]);
+                    seatRate.append(rows[0]);
+				}
+			})
+		})
+		
+		$('#coupon-check').on('click', function() {
+			var originalPrice;
+			var couponValue = $('#coupon-check').val();
+			var usePoint = 0;
+			var discountPrice = couponValue + usePoint;
+			console.log(discountPrice);
+			var couponShow = $('#coupon');
+			var totalDiscount = $('#total-discount');
+			
+			
+			if($(this).prop('checked')) {			
+				couponShow.empty();
+				couponShow.append(couponValue + " 원");
+				totalDiscount.empty();
+				totalDiscount.append(discountPrice + " 원");
+			}
+			
+			// document.queryselector("#discountResult").value = discountPrice;
+		})		
+			
+		var rseats1 = $('#R-seats1');
+		var rseats2 = $('#R-seats2');
+		var sseats1 = $('#S-seats1');
+		var sseats2 = $('#S-seats2');
+		var sseats3 = $('#S-seats3');
+		var sseats4 = $('#S-seats4');
+		var aseats1 = $('#A-seats1');
+		var aseats2 = $('#A-seats2');
+		var aseats3 = $('#A-seats3');
+		var aseats4 = $('#A-seats4');
+		
+		var possibleSeats = ['available', 'reserved'];
+		
+		var randomSeat = () => possibleSeats[Math.floor(Math.random() * possibleSeats.length)];
+		
+		createSeat(rseats1);
+		createSeat(rseats2);
+		createSeat(sseats1);
+		createSeat(sseats2);
+		createSeat(sseats3);
+		createSeat(sseats4);
+		createSeat(aseats1);
+		createSeat(aseats2);
+		createSeat(aseats3);
+		createSeat(aseats4);
+		
+		function createSeat($div){
+			
+			for (var i=0;i<4;i++) {
+				for (var j=0;j<12;j++) {
+					var seat = document.createElement('button');
+					seat.setAttribute("class","col-sm-1 btn btn-sm btn-outline-secondary")
+					var possibleSeat = randomSeat();
+					seat.innerHTML = `
+					    <svg class="${possibleSeat}" width="5" height="5">
+					      <use href="#${possibleSeat}"></use>
+					    </svg>
+					    `;				    
+					$div.append(seat);					
+				}
+			}
+		}
+				
+</script>
+</body>
+</html>

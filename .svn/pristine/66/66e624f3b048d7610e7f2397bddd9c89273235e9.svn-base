@@ -1,0 +1,12 @@
+package com.sample.service;
+
+import java.util.List;
+
+import com.sample.web.view.Reserve;
+
+public interface ReserveService {
+    void addReserve(Reserve reserve);
+    List<Reserve> getReservesByUserId(String userId);
+    void updateReserve(Reserve reserve);
+    Reserve getLastestReserveByUserId(String userId);
+}

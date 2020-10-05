@@ -1,0 +1,109 @@
+package com.sample.web.form;
+
+import java.util.List;
+
+public class NoticeForm {
+	
+	private String category;		// 필수
+	private String mainTitle;
+	private String formTitle;		// 필수
+	private String mainEmoticon;	// 선택
+	private int badge;				// 선택
+	private List<String> imagePath;	// 선택
+	private String formContent;		// 필수
+	private String subTitle;		// 필수
+	private String subContent;		// 필수
+	private String writer;			// 필수
+	
+	public NoticeForm() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getMainTitle() {
+		return mainTitle;
+	}
+
+	public void setMainTitle(String mainTitle) {
+		this.mainTitle = mainTitle;
+	}
+
+	public String getMainEmoticon() {
+		return mainEmoticon;
+	}
+
+	public void setMainEmoticon(String mainEmoticon) {
+		this.mainEmoticon = mainEmoticon;
+	}
+
+	public int getBadge() {
+		return badge;
+	}
+
+	public void setBadge(int badge) {
+		this.badge = badge;
+	}
+
+	public List<String> getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(List<String> imagePath) {
+		this.imagePath = imagePath;
+	}
+
+	public String getSubTitle() {
+		return subTitle;
+	}
+
+	public void setSubTitle(String subTitle) {
+		this.subTitle = subTitle;
+	}
+
+	public String getSubContent() {
+		return subContent;
+	}
+
+	public void setSubContent(String subContent) {
+		this.subContent = subContent;
+	}
+	
+	public String getWriter() {
+		return writer;
+	}
+
+	public void setWriter(String writer) {
+		this.writer = writer;
+	}
+
+	public String getFormTitle() {
+		return formTitle;
+	}
+
+	public void setFormTitle(String formTitle) {
+		this.formTitle = formTitle;
+	}
+
+	public String getFormContent() {
+		return formContent;
+	}
+
+	public void setFormContent(String formContent) {
+		this.formContent = formContent;
+	}
+
+	@Override
+	public String toString() {
+		return "NoticeForm [category=" + category + ", mainTitle=" + mainTitle + ", formTitle=" + formTitle
+				+ ", mainEmoticon=" + mainEmoticon + ", badge=" + badge + ", imagePath=" + imagePath + ", formContent="
+				+ formContent + ", subTitle=" + subTitle + ", subContent=" + subContent + ", writer=" + writer + "]";
+	}
+
+}
