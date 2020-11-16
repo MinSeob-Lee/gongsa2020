@@ -1,7 +1,7 @@
 # JHTA Final-project - 공공연한사이
 </hr>
 
-# 프로젝트 계획서 : [_2002._2.ver.1.4.pdf](https://github.com/MinSeob-Lee/gongsa2020/files/5543924/_2002._2.ver.1.4.pdf)
+* 프로젝트 계획서 : [_2002._2.ver.1.4.pdf](https://github.com/MinSeob-Lee/gongsa2020/files/5543924/_2002._2.ver.1.4.pdf)
 
 <div>
   <div>
